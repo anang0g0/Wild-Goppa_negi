@@ -3238,6 +3238,28 @@ aa:
     // keygen(g);
     // exit(1);
 
+    for (int i = 0; i < M; i++)
+    {
+        for (int j = 0; j < K; j++)
+        {
+            mat[j][i] = gf[mlt(fg[vb[j][i]], tr[i])];
+        }
+    }
+    
+        for (int i = 0; i < K; i++)
+        {
+            for (int j = 0; j < M; j++)
+            {
+                for (int k = 0; k < K; k++)
+                {
+                    mat[i][j] = plus(mat[i][j], gf[mlt(fg[gt[k][i]],fg[ma[k][j]])]);
+                }
+                printf("c%d,", mat[i][j]);
+            }
+            printf("\n");
+        }
+    
+/*
     for (int i = 0; i < N; i++)
     {
         for (int j = 0; j < kk; j++)
@@ -3245,7 +3267,7 @@ aa:
             mat[j][i] = vb[j][i];
         }
     }
-
+*/
     // printf("\n");
     // exit(1);
     /*
@@ -3389,16 +3411,19 @@ void pk_gen()
     static CTX Q = {0}, O_bin = {0};
     // R = {0}, R_bin = {0},
     unsigned short zz[M] = {0};
-    vv(K);
+    mkd(w,K);
     // zz[1] = 1;
     // zz[2] = 1;
-   /*
+   
     mkerr(zz, T);
     vec x = synd(zz, K);
     ymo m = bm_itr(x.x);
     chen(m.f);
-    */
-    // exit(1);
+    for(i=0;i<N;i++)
+    if(zz[i]>0)
+    printf("%d,",i);
+    printf("\n");
+     exit(1);
     //  w = mkd(w, K);
     //   w = mkg(K);
     //   half(K / 2 + 1);
@@ -3513,7 +3538,7 @@ inv_S.b=0;
     for (int i = 0; i < T; i++)
         ss[v.x[i]] = 1;
     for (int i = 0; i < M; i++)
-        if (zz[i] > 0)
+        if (ss[i] > 0)
             printf("%d,", i);
     printf("\n");
     for (int i = 0; i < M; i++)
