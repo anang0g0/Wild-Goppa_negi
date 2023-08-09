@@ -3513,7 +3513,7 @@ inv_S.b=0;
     for (int i = 0; i < T; i++)
         ss[v.x[i]] = 1;
     for (int i = 0; i < M; i++)
-        if (ss[i] > 0)
+        if (zz[i] > 0)
             printf("%d,", i);
     printf("\n");
     for (int i = 0; i < M; i++)

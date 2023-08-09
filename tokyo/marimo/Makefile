@@ -1,6 +1,6 @@
 all:
-	RFILES = debug.o gaus.o inv_mat.o chash-p.o sha3.o vmo.o
-
+	gcc -O3 vmo.c
+	
 mcElies: $(RFILES)
 	cc -o $@ $(RFILES)
 
