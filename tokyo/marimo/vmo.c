@@ -3118,8 +3118,8 @@ aa:
     //  v=rev(w);
     van(kk);
     //  v=(w);
-    ogt(g, kk);
-
+    ogt(r.x, kk);
+    //exit(1);
     // wait();
 
     // #pragma omp parallel for
@@ -3197,8 +3197,9 @@ aa:
     memset(ta, 0, sizeof(ta));
     // w = setpol(g, K + 1);
     printpol((r));
-    // printf(" =poly\n");
-
+     printf(" =poly\n");
+    //exit(1);
+    
     // 多項式の値が0でないことを確認
     for (int i = 0; i < N; i++)
     {
@@ -3216,7 +3217,7 @@ aa:
         // printf("%d,", tr[i]);
     }
     memset(g, 0, sizeof(g));
-    g[0] = 1;
+    //g[0] = 1;
 
     // 多項式を固定したい場合コメントアウトする。
     printpol(r);
@@ -3228,8 +3229,8 @@ aa:
     //  v=rev(w);
     van(kk);
     //  v=(w);
-    ogt(g, kk);
-
+    ogt(r.x, kk);
+    //exit(1);
     // wait();
 
     // #pragma omp parallel for
@@ -3414,7 +3415,7 @@ void pk_gen()
     mkd(w,K);
     // zz[1] = 1;
     // zz[2] = 1;
-   
+    //exit(1);
     mkerr(zz, T);
     vec x = synd(zz, K);
     ymo m = bm_itr(x.x);
