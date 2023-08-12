@@ -21,7 +21,7 @@ typedef struct
 
 typedef struct
 {
-  short x[M]; // 配列の添字を次数に、配列の値を係数に持つ多項式の表現
+  short x[20000]; // 配列の添字を次数に、配列の値を係数に持つ多項式の表現
 } vec;
 
 // GF(23^3)

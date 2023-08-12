@@ -9,7 +9,7 @@
 #define N 1331  // 元の数
 #define M 1331  // 符号長　M<=N 3072
 #define K (8) // 符号の次元
-#define DEG (K * 2 + 1)
+#define DEG (20000)
 #define T (K / 2) // エラーの数
 #define E (3)     // 拡大体の拡大次数
 // #define D (2187) //符号長（短縮符号）

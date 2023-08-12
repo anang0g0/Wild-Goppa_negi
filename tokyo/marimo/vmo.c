@@ -626,7 +626,6 @@ vec vmod(vec f, vec g)
     int n = vLT(g).n;
 
     //  assert (("baka^\n", vLT (f).n != 0));
-
     //  assert (("baka(A)\n", vLT (g).n != 0));
 
     if (vLT(f).n < vLT(g).n)
@@ -640,7 +639,10 @@ vec vmod(vec f, vec g)
 
     int k = vLT(g).n;
     b = vLT(g);
-
+    if(b.n==0)
+    return f;
+    if(b.a==0 || b.n==0)
+    return f;
     x = (g);
     assert(("double baka\n", b.a != 0 && b.n != 0));
     while (vLT(f).n >= 0 && vLT(g).n > 0)
@@ -649,14 +651,12 @@ vec vmod(vec f, vec g)
         c = vLTdiv(f, b);
         h = oterml((x), c);
         f = vsub(f, h);
-        if (deg((f)) == 0 || deg((g)) == 0)
+        if (deg((g)) == 0 || c.n==0)
         {
             //      printf("blake1\n");
-            break;
+            return f;
+            //break;
         }
-
-        if (c.n == 0 || b.n == 0)
-            break;
     }
 
     return f;
@@ -744,7 +744,7 @@ vec opow(vec f, int n)
 
     g = f;
 
-    for (int i = 1; i < n; i++)
+    for (int i = 0; i < n; i++)
         g = vmul(g, f);
 
     return g;
@@ -756,9 +756,10 @@ vec opowmod(vec f, vec mod, int n)
     // int i, j = 0;
 
     // 繰り返し２乗法
-    for (int i = 1; i < n + 1; i++)
+    for (int i = 0; i < 11; i++)
     {
-        f = vmul(f, f);
+        //f = vmul(vmul(f, f),f);
+        f=opow(f,11);
         if (deg(f) > deg(mod))
             f = vmod(f, mod);
     }
@@ -1445,7 +1446,7 @@ void printsage(vec a)
             j = v2a(b);
             // printf("%d,==ba\n",b.a);
             // printf ("X**%d+", i); //for GF2
-            printf("B('a^%d')*x**%d+", j, i); // for GF(2^m)
+            printf("B('a^%d')*X**%d+", j, i); // for GF(2^m)
         }
     }
 }
@@ -1456,12 +1457,6 @@ vec gcd(vec a, vec b)
 
     h.x[0] = 1;
 
-    if (deg(a) < deg(b))
-    {
-        tmp = a;
-        a = b;
-        b = tmp;
-    }
     /*
   printpol((a));
   printf(" ========f\n");
@@ -1486,16 +1481,55 @@ vec gcd(vec a, vec b)
             return b;
     }
 
-    if (vLT(r).a == 0)
-    {
-        return b;
-    }
-    else
-    {
         // if(vLT(r).a>0)
         return h;
-    }
 }
+
+
+vec vgcd(vec xx, vec yy)
+{
+  vec tt = {0}, tmp, h = {0};
+
+if(deg(xx)==0)
+return tt;
+if(deg(yy)==0)
+return xx;
+  h.x[0] = 1;
+  // h.x[0] = 0;
+  if (deg((xx)) < deg((yy)))
+  {
+    tmp = xx;
+    xx = yy;
+    yy = tmp;
+  }
+  // tt = vmod(xx, yy);
+  if(deg(yy)>0 && deg(xx)>0)
+  tt = vmod(xx, yy);
+  if(deg(tt)==0){
+  printf("baka\n");
+  exit(1);
+  }
+  while (deg(tt) > 0)
+  {
+    xx = yy;
+    yy = tt;
+    if (deg(yy) > 0)
+      tt = vmod(xx, yy);
+    if (vLT(tt).a == 0)
+      return yy;
+  }
+  //if(vLT(tt).a>0)
+  //return xx;
+printpol(tt);
+printf(" tt\n");
+printpol(xx);
+printf(" xx\n");
+printpol(yy);
+printf(" yy\n");
+  exit(1);
+  //  return yy;
+}
+
 
 // gcd for pattarson
 vec zgcd(vec a, vec n)
@@ -2018,6 +2052,36 @@ int oequ(vec f, vec g)
     return 0;
 }
 
+vec opp(vec f, vec mod)
+{
+  vec s = f;
+
+  // 繰り返し２乗法
+  for (int i = 0; i < E; i++)
+  {
+    // s = vmod(kara(s,s),mod);
+    s=vmod(opow(s,Pr),mod);
+    //s = vmod(vmul(s,vmul(s, s)), mod);
+  }
+  // printf("@@@=");
+  // printpol(s);
+
+  return s;
+}
+
+int fequ(vec a, vec b)
+{
+  int k = deg(a), l = deg(b);
+  if (k != l)
+    return 1;
+  for (int i = 0; i < k; i++)
+    if (a.x[i] != b.x[i])
+      return 1;
+
+  return 0;
+}
+
+
 // GF(2^m) then set m in this function.
 int ben_or(vec f)
 {
@@ -2028,42 +2092,50 @@ int ben_or(vec f)
     int m = E;
     // m=12 as a for GF(4096)=2^12 defined @ gloal.h or here,for example m=4 and GF(16)
 
+
     v.x[1] = 1;
     s = (v);
-    r = s;
+    r.x[11]=1;
+    printpol(r);
+    printf("kofwojhfow");
+    //exit(1);
+    //r = s;
     n = deg((f));
 
     if (n == 0)
         return -1;
 
-    i = 0;
-
     // r(x)^{q^i} square pow mod
-    while (i < n / 2 + 1)
+    for (i=0;i < K / 2;i++)
     {
+    //printpol(r);
+    
         flg = 1;
+        printf(":i=%d",i);
+ 
+
         // irreducible over GH(8192) 2^13
-        r = opowmod(r, f, m);
-
+        //r = opowmod(r, f, 3);
+        //r=vv[i];
+        r=opp(r,f);
         // irreducible over GF2
-        // r=vmod(vecow(r,2),f);
-
-        u = vadd(r, s);
-        if (deg((u)) == 0 && vLT(u).a == 0)
-            return -1;
-        if (deg((u)) == 0 && vLT(u).a == 1)
-        {
-            i++;
-            flg = 0;
+        //r=vmod(opow(r,Pr),f);
+        
+        printpol(r);
+        printf("r==\n");
+        
+        
+        u = vsub(r, (s));
+        u = vgcd(u, f);
+        if (deg((u)) > 0 && deg(u)<8){
+        //printsage(u);
+        //printf("\n");
+        //exit(1);
+        //if (fequ(f, u) == 0 && f.x[0] > 0 )
+        //  return 0;
+        return -1;
         }
-        if (deg((u)) > 0)
-            u = gcd(f, u);
-
-        if (deg((u)) > 0)
-            return -1;
-
-        if (flg == 1)
-            i++;
+        //i++;
     }
 
     return 0;
@@ -2898,8 +2970,8 @@ vec mkpol()
 
     } while (j == 0);
 
-    printpol((w));
-    printf(" ==g\n");
+    //printpol((w));
+    //printf(" ==g\n");
     // exit(1);
 
     return w;
@@ -3160,7 +3232,7 @@ vec mkd(vec w, int kk)
 
     unsigned short tr[N] = {0};
     unsigned short ta[N] = {0};
-    vec v = {0};
+    vec v = {0},pp={0},tt={0};
     unsigned short po[K + 1] = {1, 0, 1, 0, 5};
     // vec w={0};
     vec r = {0};
@@ -3175,11 +3247,31 @@ aa:
     l = -1;
     ii = 0;
     // irreducible gvecpa code (既役多項式が必要なら、ここのコメントを外すこと。)
-
+    /*
+     while (l < 0)
+    {
+        for (i = 0; i < K; i++)
+            pp.x[i] = rand() % N;
+        mykey(tt.x, pp);
+        tt.x[K] = 1;
+        l = ben_or(tt);
+        if (l == 0)
+        {
+            printf("\n");
+            printsage(tt);
+            printf(" ==irr\n");
+            // exit(1);
+        }
+    }
+    */
+    //exit(1);
+    l=-1;
     while (l == -1)
     {
         w = mkpol();
         l = ben_or(w);
+        if(l==-1)
+        goto aa;
         printf("irr=%d\n", l);
         if (ii > 300)
         {
@@ -3189,7 +3281,10 @@ aa:
         ii++;
         //
     }
-
+    
+    printsage(w);
+//    printf("wwwwwww\n");
+//exit(1);
     // separable gvecpa code
     // w = mkpol();
     r = w;
@@ -3208,6 +3303,7 @@ aa:
         {
             printf("eval 0 @ %d\n", i);
             // fail = 1;
+            //exit(1);
             goto aa;
         }
     }
@@ -5085,7 +5181,7 @@ void v2(int kk)
     unsigned short ta[N] = {0};
 
     printf("van der\n");
-
+    
     // while (l < 0)
     {
         for (i = 0; i < K; i++)
