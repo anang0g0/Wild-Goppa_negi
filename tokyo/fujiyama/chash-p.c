@@ -582,8 +582,8 @@ unsigned short mltn(int n, int x)
 
   if (n == 0)
     return 1;
-  i = x;
-  for (j = 0; j < n - 1; j++)
+  i = 1;
+  for (j = 0; j < n ; j++)
     i = (i* x)%N;
 
   return (unsigned short)i;

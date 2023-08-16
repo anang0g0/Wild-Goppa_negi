@@ -352,7 +352,7 @@ void printsage(vec a)
             b.a = a.x[i];
             b.n = i;
             j = v2a(b);
-            printf("B('a^%d')*X**%d+", j, i); // for GF(2^m)
+            printf("B(%d)*X**%d+", j, i); // for GF(2^m)
         }
     }
 }
@@ -635,7 +635,7 @@ vec renritu(MTX a)
 }
 
 // #define NN 16
-vec sol(MTX a)
+OP sol(MTX a)
 {
     unsigned int p, d;
     int i, j, k;
@@ -704,6 +704,7 @@ vec sol(MTX a)
     pol = setpol(x.x, K / 2 + 1);
     printpol(o2v(pol));
     printf(" ==key\n");
+
     for (i = 1; i < N; i++)
     {
         // v.x[i] = 0;
@@ -714,7 +715,163 @@ vec sol(MTX a)
         }
     }
 
-    return vv;
+    return pol;
+}
+
+vec mkd(OP w, int kk)
+{
+    int i, j, k, l, ii = 0;
+
+    unsigned short tr[N] = {0};
+    unsigned short ta[N] = {0};
+    vec v = {0}, pp = {0}, tt = {0};
+    unsigned short po[K + 1] = {1, 0, 1, 0, 5};
+    // vec w={0};
+    vec r = {0};
+
+aa:
+
+    // printf("\n");
+    memset(mat, 0, sizeof(mat));
+    // 既約性判定のためのBen-Orアルゴリズム。拡大体にも対応している。デフォルトでGF(8192)
+    // 既約多項式しか使わない。
+
+    l = -1;
+    ii = 0;
+    // irreducible gvecpa code (既役多項式が必要なら、ここのコメントを外すこと。)
+    /*
+     while (l < 0)
+    {
+        for (i = 0; i < K; i++)
+            pp.x[i] = rand() % N;
+        mykey(tt.x, pp);
+        tt.x[K] = 1;
+        l = ben_or(tt);
+        if (l == 0)
+        {
+            printf("\n");
+            printsage(tt);
+            printf(" ==irr\n");
+            // exit(1);
+        }
+    }
+
+    //exit(1);
+    l=-1;
+    while (l == -1)
+    {
+
+        l = ben_or(w);
+        if(l==-1)
+        goto aa;
+        printf("irr=%d\n", l);
+        if (ii > 300)
+        {
+            printf("too many error\n");
+            exit(1);
+        }
+        ii++;
+        //
+    }
+    */
+    w = mkpol();
+    printsage(o2v(w));
+    //    printf("wwwwwww\n");
+    // exit(1);
+    // separable gvecpa code
+    // w = mkpol();
+    r = o2v(w);
+    //  r=vmul(w,w);
+    memset(ta, 0, sizeof(ta));
+    // w = setpol(g, K + 1);
+    printpol((r));
+    printf(" =poly\n");
+    // exit(1);
+
+    // 多項式の値が0でないことを確認
+    for (int i = 0; i < N; i++)
+    {
+        ta[i] = trace(w, i);
+        if (ta[i] == 0)
+        {
+            printf("eval 0 @ %d\n", i);
+            // fail = 1;
+            // exit(1);
+            goto aa;
+        }
+    }
+    for (int i = 0; i < N; i++)
+    {
+        tr[i] = oinv(ta[i], N);
+        // printf("%d,", tr[i]);
+    }
+    memset(g, 0, sizeof(g));
+    // g[0] = 1;
+
+    // 多項式を固定したい場合コメントアウトする。
+    printpol(r);
+    printf("\n");
+    printsage((r));
+    printf("\n");
+    printf("sagemath で既約性を検査してください！\n");
+    memset(v.x, 0, sizeof(v.x));
+    //  v=rev(w);
+    van(kk);
+    //  v=(w);
+    ogt(r.x, kk);
+    // exit(1);
+    //  wait();
+
+    // #pragma omp parallel for
+
+    printf("\nすげ、オレもうイキそ・・・\n");
+    // keygen(g);
+    // exit(1);
+
+    for (int i = 0; i < M; i++)
+    {
+        for (int j = 0; j < K; j++)
+        {
+            mat[i][j] = (vb[j][i] * tr[i]) % N;
+        }
+    }
+
+    for (int i = 0; i < K; i++)
+    {
+        for (int j = 0; j < M; j++)
+        {
+            for (int k = 0; k < K; k++)
+            {
+                mat[j][i] = (mat[j][i] + (gt[k][i] * ma[j][k])) % N;
+            }
+            printf("c%d,", mat[j][i]);
+        }
+        printf("\n");
+    }
+
+    /*
+        for (int i = 0; i < N; i++)
+        {
+            for (int j = 0; j < kk; j++)
+            {
+                mat[j][i] = vb[j][i];
+            }
+        }
+    */
+    // printf("\n");
+    // exit(1);
+    /*
+    for( int j = 0; j < N; j++)
+    {
+        for( int i= 0; i < kk; i++)
+            printf("%d,", mat[j][i]);
+        printf("\n");
+    }
+    //exit(1);
+    //wait();
+*/
+
+    return o2v(w);
 }
 
 void vv(int kk)
@@ -856,26 +1013,139 @@ vec chen(vec f)
     return e;
 }
 
+typedef struct
+{
+    vec f;
+    vec g;
+    vec h;
+} ymo;
+
+vec pmul(vec a, vec b)
+{
+    int i, j, k, l;
+    vec c = {0};
+
+    k = deg(a) + 1;
+    l = deg(b) + 1;
+
+    for (int i = 0; i < k; i++)
+    {
+        for (int j = 0; j < l; j++)
+            if (a.x[i] > 0)
+            {
+                c.x[i + j] = (c.x[i + j] + a.x[i] * b.x[j]) % N;
+                // printf("%d=c ",c.x[i+j]);
+            }
+        // printf("\n");
+    }
+    /*
+    printf("\n");
+    printpol(v2o(c));
+    printf(" ==c\n");
+    printpol(v2o(a));
+    printf(" ==a\n");
+    printpol(v2o(b));
+    printf(" ==b\n");
+    // exit(1);
+    */
+    return c;
+}
+
+ymo bm_itr(unsigned short s[])
+{
+    vec U1[2][2] = {0}, U2[2][2][2] = {0}, null = {0};
+    int i, j, k;
+    ymo t = {0};
+
+    U2[0][0][0].x[0] = 1;    // f[0];
+    U2[0][0][1].x[0] = 0;    // fai[0];
+    U2[0][1][0].x[0] = 0;    // g[0];
+    U2[0][1][1].x[0] = -(1); // thi[0];
+    int m = 0, d = 0, p = 2 * d - m - 1, myu = 0;
+    printf("m=%d d=%d myu=%d p=%d\n", m, d, myu, p);
+    for (m = 0; m < K; m++)
+    {
+        d = deg(U2[0][0][0]);
+        p = 2 * d - m - 1;
+        myu = 0;
+        for (int i = 0; i <= d; i++)
+            myu = (myu + U2[0][0][0].x[i] * s[i + (m - d)]) % N;
+
+        printf("m=%d ad=%d myu=%d p=%d\n", m, d, myu, p);
+        memset(U1, 0, sizeof(U1));
+        if (myu == 0 || p >= 0)
+        {
+            U1[0][0].x[0] = 1;
+            U1[0][1].x[p] = -(myu);
+            U1[1][0].x[0] = 0;
+            U1[1][1].x[0] = 1;
+            // exit(1);
+        }
+        else if (myu > 0 && p < 0)
+        {
+            if (p < 0)
+            {
+                p = -1 * (p);
+            }
+            U1[0][0].x[p] = 1;
+            U1[0][1].x[0] = -(myu);
+            U1[1][0].x[0] = oinv(myu, N);
+            U1[1][1].x[0] = 0;
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            for (int j = 0; j < 2; j++)
+            {
+                for (int k = 0; k < 2; k++)
+                    U2[1][i][j] = (vadd((U2[1][i][j]), (pmul(U1[i][k], U2[0][k][j]))));
+            }
+        }
+        memcpy(U2[0], U2[1], sizeof(U2[0]));
+        memset(U2[1], 0, sizeof(U2[1]));
+    }
+    t.f = U2[0][0][0];
+    t.g = U2[0][1][0];
+    t.h = U2[0][0][1];
+    if (deg(t.f) == T)
+    {
+        printsage((t.f));
+        printf(" ==chen00\n");
+        return t;
+    }
+    else
+    {
+        t.f = U2[1][0][0];
+        printsage((t.f));
+        printf("baka\n");
+        exit(1);
+    }
+}
+
 int main()
 {
     int i;
     unsigned short s[K + 1] = {0}, z1[N] = {0};
     vec v = {0}, x = {0};
     OP f = {0};
+    ymo g = {0};
 
     printf("%d %d %d\n", 3, oinv(3, N), 3 * oinv(3, N) % N);
     // exit(1);
     srand(clock());
     // mkg(K); // Goppa Code (EEA type)
-    //van(K); // RS-Code generate
-    vv(K);           // Goppa Code's Parity Check (Berlekamp type)
-    while(1){
-    for(i=0;i<N;i++)
-    z1[i]=0;
+    // van(K); // RS-Code generate
+    // vv(K);           // Goppa Code's Parity Check (Berlekamp type)
+    mkd(f, K);
+    // while(1)
+    int count = 0;
+
+    for (i = 0; i < N; i++)
+        z1[i] = 0;
     mkerr(z1, T);    // generate error vector
     f = synd(z1, K); // calc syndrome
     x = o2v(f);      // transorm to vec
-    // r = bma(x.x);    // Berlekamp-Massey Algorithm
+
+    // exit(1);
     MTX b = {0};
 
     for (i = 0; i < K; i++)
@@ -897,24 +1167,19 @@ int main()
             printf("e%d,", b.x[i][j]);
         printf("\n");
     }
-    x = sol(b);
+    f = sol(b);
+
     for (i = 0; i < N; i++)
     {
-        if (z1[i] != x.x[i]){
-            printf("baka=%d\n", i);
-            exit(1);
+        if (trace(f, i) % N == 0 && z1[i] > 0)
+        {
+            count++;
+            printf("i=%d %d\n", i, z1[i]);
         }
     }
-    int flg=0;
-    for(i=0;i<N;i++){
-    if(z1[i]>0 && x.x[i]>0){
-    printf("%d %d\n",z1[i],i);
-    flg++;
-    }
-    }
-    if(flg==T)
-        exit(1);
-    // printf("\n");
-    }
+
+    if (count != T)
+        printf("baka\n");
+
     return 0;
 }
