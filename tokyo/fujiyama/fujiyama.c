@@ -1133,9 +1133,9 @@ int main()
     // exit(1);
     srand(clock());
     // mkg(K); // Goppa Code (EEA type)
-    // van(K); // RS-Code generate
+     van(K); // RS-Code generate
     // vv(K);           // Goppa Code's Parity Check (Berlekamp type)
-    mkd(f, K);
+    //mkd(f, K);
     // while(1)
     int count = 0;
 
@@ -1144,8 +1144,15 @@ int main()
     mkerr(z1, T);    // generate error vector
     f = synd(z1, K); // calc syndrome
     x = o2v(f);      // transorm to vec
-
-    // exit(1);
+    /*
+    ymo e=bm_itr(x.x);
+    f=v2o(e.f);
+    chen(e.f);
+    for(i=0;i<N;i++)
+    if(trace(f,i)%N==0)
+    printf("i=%d\n",i);
+    exit(1);
+    */
     MTX b = {0};
 
     for (i = 0; i < K; i++)
@@ -1171,15 +1178,17 @@ int main()
 
     for (i = 0; i < N; i++)
     {
-        if (trace(f, i) % N == 0 && z1[i] > 0)
+        if (trace(f, i) % N != 0 && z1[i]>0)
         {
-            count++;
-            printf("i=%d %d\n", i, z1[i]);
+            printf("baka\n");
+            exit(1);
+            //count++;
+            //printf("i=%d %d\n", i, z1[i]);
         }
     }
-
+/*
     if (count != T)
         printf("baka\n");
-
+*/
     return 0;
 }
