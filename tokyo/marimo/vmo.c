@@ -54,23 +54,23 @@ typedef struct
 } ymo;
 
 vec vv(int kk);
-unsigned short plus(unsigned short a, unsigned short b);
-unsigned short bexp(unsigned short a);
-// unsigned short minus(unsigned short a);
-unsigned short eval(vec f, unsigned short x);
+short plus(short a, short b);
+short bexp(short a);
+// short minus(short a);
+short eval(vec f, short x);
 void printpol(vec a);
-ymo bm_itr(unsigned short s[]);
+ymo bm_itr(short s[]);
 // #pragma omp threadprivate(mat)
 // シンドロームのコピー
-unsigned short sy[K] = {0};
-unsigned short pp[13][4] = {{0, 0, 9, 2}, {0, 0, 11, 2}, {0, 0, 16, 3}, {0, 0, 15, 2}, {0, 0, 1, 2}, {0, 1, 0, 2}, {0, 0, 1, 1}, {0, 0, 6, 3}, {1, 1, 2, 2}, {0, 0, 1, 2}, {0, 0, 21, 5}, {0, 0, 30, 3}, {0, 0, 1, 4}};
-unsigned short pt[3] = {0, 1, 2};
+short sy[K] = {0};
+short pp[13][4] = {{0, 0, 9, 2}, {0, 0, 11, 2}, {0, 0, 16, 3}, {0, 0, 15, 2}, {0, 0, 1, 2}, {0, 1, 0, 2}, {0, 0, 1, 1}, {0, 0, 6, 3}, {0, 0, 6, 3}, {0, 0, 1, 2}, {0, 0, 21, 5}, {0, 0, 30, 3}, {0, 0, 1, 4}};
+short pt[3] = {0, 1, 2};
 static CTX S, inv_S;
 static CTX big = {0};
 static CTX fls = {0};
 static CTX lng ={0};
 // Gvecpa多項式
-static unsigned short g[K + 1] = {1, 2, 3, 4, 6};
+static short g[K + 1] = {1, 2, 3, 4, 6};
 //{1,0,0,0,0};
 //{1,0,1,0,5};
 //{1};
@@ -78,7 +78,7 @@ static unsigned short g[K + 1] = {1, 2, 3, 4, 6};
 //
 
 // 有限体の元の逆数
-unsigned short oinv(unsigned short a)
+short oinv(short a)
 {
 
     if (a == 0)
@@ -89,9 +89,9 @@ unsigned short oinv(unsigned short a)
     return N - fg[a] + 1;
 }
 
-unsigned short oinv2(unsigned short a, unsigned short n)
+short oinv2(short a, short n)
 {
-    unsigned short i;
+    short i;
 
     if (a == 0)
         return 0;
@@ -107,7 +107,7 @@ unsigned short oinv2(unsigned short a, unsigned short n)
 }
 
 // 有限体の元の逆数
-unsigned short oinv3(unsigned short a)
+short oinv3(short a)
 {
 
     if (a == 0)
@@ -116,7 +116,7 @@ unsigned short oinv3(unsigned short a)
     for (int i = 0; i < N; i++)
     {
         if (gf[mlt(fg[a], i)] == 1)
-            return (unsigned short)i;
+            return (short)i;
     }
 
     printf("no return3 \n");
@@ -124,7 +124,7 @@ unsigned short oinv3(unsigned short a)
 }
 
 // aに何をかけたらbになるか
-unsigned short equ(unsigned short a, unsigned short b)
+short equ(short a, short b)
 {
     int i = 0;
     for (int i = 0; i < M; i++)
@@ -206,7 +206,7 @@ void vec_print_raw(const vec f)
 bool vec_verify(const vec f)
 {
     bool end = false;
-    unsigned short n_max = 0;
+    short n_max = 0;
     for (int i = 0; i < DEG; i++)
     {
         if (end && (i != 0 || f.x[i] != 0))
@@ -236,7 +236,7 @@ bool vec_verify(const vec f)
 }
 
 // 配列の値を係数として多項式に設定する
-vec setpol(unsigned short f[], int n)
+vec setpol(short f[], int n)
 {
     vec g;
     vec a = {0};
@@ -324,7 +324,7 @@ vec vterml(vec f, oterm t)
     // int i, k, j;
     vec h = {0};
     vec test;
-    unsigned short n;
+    short n;
 
     printpol(f);
     printf(" ==f\n");
@@ -339,7 +339,7 @@ vec vterml(vec f, oterm t)
     {
         if (f.x[i] > 0)
         {
-            unsigned short tmp = equ(t.a, f.x[i]);
+            short tmp = equ(t.a, f.x[i]);
             h.x[i - t.n] = (f.x[i] - gf[mlt(fg[tmp], fg[t.a])]) % Pr;
             printf("t+n=%d\n", i - t.n);
         }
@@ -358,7 +358,7 @@ vec oterml(vec f, oterm t)
     // int i, k, j;
     vec h = {0};
     vec test;
-    unsigned short n;
+    short n;
 
     printpol(f);
     printf(" ==f\n");
@@ -391,7 +391,7 @@ vec oterml2(vec f, oterm t)
     // int i, k, j;
     vec h = {0};
     vec test;
-    unsigned short n;
+    short n;
 
     // f=conv(f);
     int k = deg(f);
@@ -603,7 +603,7 @@ oterm vLTdiv(vec f, oterm t)
 }
 
 // モニック多項式にする
-vec coeff(vec f, unsigned short d)
+vec coeff(vec f, short d)
 {
     int j, k;
     vec a, b;
@@ -817,11 +817,11 @@ vec confer(vec f, int a)
     return g;
 }
 
-unsigned short xtrace(vec f, unsigned short x)
+short xtrace(vec f, short x)
 {
     int d, z = 0;
     vec g = (f);
-    unsigned short u = 0;
+    short u = 0;
 
     d = deg(g) + 1;
     // if(g.x[0]>0)
@@ -848,7 +848,7 @@ unsigned short xtrace(vec f, unsigned short x)
 
 void makefg()
 {
-    // unsigned short i, j, count = 0;
+    // short i, j, count = 0;
 
     // for( int i= 0; i < O; i++)
     {
@@ -860,7 +860,7 @@ void makefg()
 
     // exit(1);
 
-    printf("unsigned short fg[%d]={", O);
+    printf("short fg[%d]={", O);
     for (int i = 0; i < O; i++)
         printf("%d,", fg[i]);
     printf("};\n");
@@ -871,14 +871,14 @@ void makefg()
 }
 
 vec dick[O] = {0};
-unsigned short val[N] = {0}; //, a = {0}, cc = {0};
+short val[N] = {0}; //, a = {0}, cc = {0};
 void mkmf()
 {
     // int i, j, k, count = 0;
     vec f = {0}, g = {0}, h = {0}, w = {0}, s = {0}, u = {0};
     vec b = {0}, a = {0}, d = {0}, t = {0}, v = {0};
     oterm o = {0};
-    unsigned short ccp[4] = {0};
+    short ccp[4] = {0};
 
     if (O == 1331)
     {
@@ -925,7 +925,7 @@ void mkmf()
         for (int i = 0; i < 4; i++)
             ccp[i] = pp[9][i];
     }
-    if (O == 177147)
+    if (O == 16807)
     {
         for (int i = 0; i < 4; i++)
             ccp[i] = pp[8][i];
@@ -1073,7 +1073,7 @@ void mkmf()
     // printpol(o2v(f));
     // printf(" =f\n");
     // printf("gf[%d]={\n",O);
-    printf("unsigned short gf[%d]={", O);
+    printf("short gf[%d]={", O);
     for (int i = 0; i < O; i++)
         printf("%d,", gf[i]);
     printf("};");
@@ -1082,7 +1082,7 @@ void mkmf()
     // exit(1);
 }
 
-unsigned short v2c(vec v){
+short v2c(vec v){
 uni w={0};
 
     w.fugo.b0 = v.x[0];
@@ -1102,7 +1102,7 @@ x.x[2]=in.fugo.b2;
 return x;
 }
 
-uni d2c(unsigned short a)
+uni d2c(short a)
 {
     vec v = dick[fg[a]];
     uni w = {0};
@@ -1118,7 +1118,7 @@ uni d2c(unsigned short a)
 }
 
 // union to vec 2 short
-unsigned short c2d(uni w)
+short c2d(uni w)
 {
     vec x = {0};
     x.x[0] = w.fugo.b0;
@@ -1127,7 +1127,7 @@ unsigned short c2d(uni w)
     return xtrace((x), Pr);
 }
 
-vec o2c(unsigned short a)
+vec o2c(short a)
 {
     vec v = dick[fg[a]];
 
@@ -1138,15 +1138,15 @@ vec o2c(unsigned short a)
     return v;
 }
 
-unsigned short c2o(vec x)
+short c2o(vec x)
 {
 
     return xtrace((x), Pr);
 }
 
-unsigned short plus(unsigned short a, unsigned short b)
+short plus(short a, short b)
 {
-    unsigned short u;
+    short u;
     if (a == 0 && b > 0)
         return b;
     if (b == 0 && a > 0)
@@ -1189,9 +1189,9 @@ vec pmul(vec a, vec b)
     return c;
 }
 
-unsigned short v2u(vec u)
+short v2u(vec u)
 {
-    unsigned short s = 0;
+    short s = 0;
 
     for (int j = 0; j < N; j++)
     {
@@ -1202,10 +1202,10 @@ unsigned short v2u(vec u)
 }
 
 // 多項式の代入値
-unsigned short eval(vec f, unsigned short x)
+short eval(vec f, short x)
 {
     vec g = {0};
-    unsigned short u = 0, s = 0;
+    short u = 0, s = 0;
     vec v = (f), h = {0};
     int d = deg((v)) + 1;
 
@@ -1224,7 +1224,7 @@ unsigned short eval(vec f, unsigned short x)
     return u;
 }
 
-unsigned short trace(vec g, unsigned short u)
+short trace(vec g, short u)
 {
     int n = 1, d = deg(g) + 1;
 
@@ -1252,9 +1252,9 @@ void de()
     }
 }
 
-unsigned short plus2(unsigned short a, unsigned short b)
+short plus2(short a, short b)
 {
-    unsigned short u;
+    short u;
     if (a == 0)
         return b;
     if (b == 0)
@@ -1264,18 +1264,18 @@ unsigned short plus2(unsigned short a, unsigned short b)
     return u;
 }
 
-unsigned short hiku(unsigned short a, unsigned short b)
+short hiku(short a, short b)
 {
-    unsigned short u;
+    short u;
 
     u = eval(osub(dick[fg[a]], dick[fg[b]]), Pr);
 
     return u;
 }
 
-unsigned short hiku2(unsigned short a, unsigned short b)
+short hiku2(short a, short b)
 {
-    unsigned short u;
+    short u;
 
     u = eval(osub(dick[fg[a]], dick[fg[b]]), Pr);
 
@@ -1413,7 +1413,7 @@ vec inv(vec a, vec n)
     return u;
 }
 
-unsigned short v2a(oterm a)
+short v2a(oterm a)
 {
     int i, j;
 
@@ -1747,7 +1747,7 @@ chk(vec f)
     exit(1);
 }
 
-vec kof(unsigned short c, vec f)
+vec kof(short c, vec f)
 {
     int i, j, k;
     vec b = {0}, h = {0};
@@ -1898,7 +1898,7 @@ static void
 ginit(void)
 {
     int j, count = 0, k = 0;
-    unsigned short gg[K + 1] = {0};
+    short gg[K + 1] = {0};
 
     printf("in ginit\n");
 
@@ -1925,10 +1925,10 @@ ginit(void)
     memcpy(g, gg, sizeof(g));
 }
 
-unsigned short pack(vec b)
+short pack(vec b)
 {
     int i;
-    unsigned short a = 0;
+    short a = 0;
 
     for (int i = EXP - 1; i >= 0; i--)
         a ^= (b.x[EXP - i - 1] << 2);
@@ -1936,7 +1936,7 @@ unsigned short pack(vec b)
     return a;
 }
 
-short unpack(unsigned short u)
+short unpack(short u)
 {
     vec c = {0};
     c = dick[fg[u]];
@@ -2006,7 +2006,7 @@ vec chen(vec f)
 {
     vec e = {0};
     int i, count = 0, n, x = 0;
-    unsigned short z;
+    short z;
 
     n = deg((f));
     // exit(1);
@@ -2286,7 +2286,7 @@ static MTX bd2()
     return R;
 }
 
-MT bin(unsigned short c[K])
+MT bin(short c[K])
 {
     int i, j, count = 0;
     vec v = {0}, x = {0};
@@ -2303,7 +2303,7 @@ MT bin(unsigned short c[K])
     return n;
 }
 
-MT vin(unsigned short s[K * E])
+MT vin(short s[K * E])
 {
     vec v = {0};
     int i, j, count = 0;
@@ -2364,8 +2364,8 @@ void toBit(MTX L)
     // fclose(ff);
 }
 
-unsigned short HH[N][K];
-unsigned short TE[N][K / 2 + 1];
+short HH[N][K];
+short TE[N][K / 2 + 1];
 
 static MTX toByte(MTX SH, int kk)
 {
@@ -2458,7 +2458,7 @@ byte_to_hex(uint8_t b, char s[23])
 }
 
 // 有限体の元の平方を計算する
-int isqrt(unsigned short u)
+int isqrt(short u)
 {
     int i, j, k;
 
@@ -2479,7 +2479,7 @@ void encrypt(char buf[], unsigned char sk[64])
     sha3_context c = {0};
     int image_size = 512, i;
     FILE *fp;
-    //  unsigned short dd=0;
+    //  short dd=0;
 
     printf("plain text=");
     for (int i = 0; i < 64; i++)
@@ -2521,7 +2521,7 @@ void decrypt(vec w)
     int i, j;
     unsigned char sk[64] = {0}, err[N] = {
                                     0};
-    unsigned short buf[K] = {0}, tmp[K] = {
+    short buf[K] = {0}, tmp[K] = {
                                      0};
     vec f = {0}, r = {0};
     vec v = {0};
@@ -2604,8 +2604,8 @@ void decrypt(vec w)
     return;
 }
 
-unsigned short vb[K * 2][N] = {0};
-unsigned short gt[K * 2][K * 2] = {0};
+short vb[K * 2][N] = {0};
+short gt[K * 2][K * 2] = {0};
 void van(int kk)
 {
     int i, j;
@@ -2658,7 +2658,7 @@ void vanshe(int kk)
     // exit(1);
 }
 
-void ogt(unsigned short pp[], int kk)
+void ogt(short pp[], int kk)
 {
     int i, j, k;
     vec w = {0};
@@ -2680,9 +2680,9 @@ void ogt(unsigned short pp[], int kk)
     // exit(1);
 }
 
-vec synd(unsigned short zz[], int kk)
+vec synd(short zz[], int kk)
 {
-    unsigned short syn[K] = {0}, s = 0;
+    short syn[K] = {0}, s = 0;
     int i, j, t1;
     vec f = {0};
 
@@ -2720,19 +2720,19 @@ vec synd(unsigned short zz[], int kk)
     return f;
 }
 
-unsigned short tas(uni a, uni x)
+short tas(uni a, uni x)
 {
-    unsigned short c = {0};
+    short c = {0};
 
     c = plus(xtrace(dick[fg[c2d(a)]], Pr), xtrace(dick[fg[c2d(x)]], Pr));
     return c;
 }
 
-vec sind(unsigned short zz[], int kk)
+vec sind(short zz[], int kk)
 {
     // uni syn[K] = {0};
-    unsigned short s[K * E] = {0};
-    unsigned short syn[K * E] = {0};
+    short s[K * E] = {0};
+    short syn[K * E] = {0};
     int i, j, t1;
     vec ww = {0};
     uni om = {0}, u[K] = {0};
@@ -2801,7 +2801,7 @@ vec sind(unsigned short zz[], int kk)
     return ww;
 }
 
-vec d2v(unsigned short d[K])
+vec d2v(short d[K])
 {
     vec v = {0};
     uni e = {0};
@@ -2818,7 +2818,7 @@ vec d2v(unsigned short d[K])
 }
 
 // 64バイト秘密鍵の暗号化と復号のテスト
-void test(vec w, unsigned short zz[])
+void test(vec w, short zz[])
 {
     int i;
     vec v = {0};
@@ -2844,7 +2844,7 @@ void test(vec w, unsigned short zz[])
     char buf[O] = {0}, buf1[10] = {
                               0};
     unsigned char sk[64] = {0};
-    // unsigned short s[K]={0};
+    // short s[K]={0};
     // fread(sk,1,32,fp);
     for (int i = 0; i < 64; i++)
         sk[i] = i + 1;
@@ -2885,7 +2885,7 @@ void test(vec w, unsigned short zz[])
 void readkey()
 {
     FILE *fp, *fq;
-    unsigned short dd[K * N] = {0};
+    short dd[K * N] = {0};
     int i, j;
 
     // 鍵をファイルに書き込むためにはkey2を有効にしてください。
@@ -2977,16 +2977,16 @@ vec mkpol()
     return w;
 }
 
-unsigned short dd[N][N] = {0};
+short dd[N][N] = {0};
 
 // Patterson & EEA 用（ランダム多項式、次元指定）
 vec mkg(int kk)
 {
     int i, j, k, l, ii = 0;
     vec w = {0};
-    unsigned short tr[N] = {0};
-    unsigned short ta[N] = {0};
-    unsigned short po[K + 1] = {1, 0, 1, 0, 5};
+    short tr[N] = {0};
+    short ta[N] = {0};
+    short po[K + 1] = {1, 0, 1, 0, 5};
 
 aa:
 
@@ -3085,7 +3085,7 @@ aa:
         // printf("tr[%d]=%d\n",j,tr[j]);
     }
 
-    unsigned short s;
+    short s;
 #pragma omp parallel for
     for (int i = 0; i < K; i++)
     {
@@ -3120,10 +3120,10 @@ vec mkc(vec w, int kk)
 {
     int i, j, k, l, ii = 0;
 
-    unsigned short tr[N] = {0};
-    unsigned short ta[N] = {0};
+    short tr[N] = {0};
+    short ta[N] = {0};
     vec v = {0};
-    unsigned short po[K + 1] = {1, 0, 1, 0, 5};
+    short po[K + 1] = {1, 0, 1, 0, 5};
     // vec w={0};
     vec r = {0};
 
@@ -3230,10 +3230,10 @@ vec mkd(vec w, int kk)
 {
     int i, j, k, l, ii = 0;
 
-    unsigned short tr[N] = {0};
-    unsigned short ta[N] = {0};
+    short tr[N] = {0};
+    short ta[N] = {0};
     vec v = {0},pp={0},tt={0};
-    unsigned short po[K + 1] = {1, 0, 1, 0, 5};
+    short po[K + 1] = {1, 0, 1, 0, 5};
     // vec w={0};
     vec r = {0};
 
@@ -3466,10 +3466,10 @@ static CTX transi(CTX H)
     return X;
 }
 
-vec zind(unsigned short zz[], int kk)
+vec zind(short zz[], int kk)
 {
     // uni syn[K] = {0};
-    unsigned short s[K * E] = {0};
+    short s[K * E] = {0};
     int i, j, t1;
     vec ww = {0};
     uni om = {0};
@@ -3499,7 +3499,7 @@ void printuni(uni a)
     printf("%d %d %d\n", a.fugo.b0, a.fugo.b1, a.fugo.b2);
 }
 
-void mkerr(unsigned short *z1, int num)
+void mkerr(short *z1, int num)
 {
     int j, l;
 
@@ -3529,7 +3529,7 @@ void pk_gen()
     vec w = {0};
     static CTX Q = {0}, O_bin = {0};
     // R = {0}, R_bin = {0},
-    unsigned short zz[M] = {0};
+    short zz[M] = {0};
     mkd(w,K);
     // zz[1] = 1;
     // zz[2] = 1;
@@ -3558,7 +3558,7 @@ void pk_gen()
     uni test[M] = {0};
 
     // exit(1);
-    unsigned short ww[K] = {0}, nn[K] = {0};
+    short ww[K] = {0}, nn[K] = {0};
     uni om = {0};
     static CTX H = {0};
 
@@ -3603,8 +3603,8 @@ inv_S.b=0;
     // exit(1);
     
     /*
-        unsigned short sa[4][4] = {{0,0,1,1},{2,0,1,0},{1,2,1,2},{0,0,1,2}};
-        unsigned short ans[4][4] = {{1, 0, 2, 0}, {0, 0, 2, 2}, {2, 1, 0, 0}, {2, 1, 2, 1}};
+        short sa[4][4] = {{0,0,1,1},{2,0,1,0},{1,2,1,2},{0,0,1,2}};
+        short ans[4][4] = {{1, 0, 2, 0}, {0, 0, 2, 2}, {2, 1, 0, 0}, {2, 1, 2, 1}};
         for (int k = 0; k < F; k++)
         {
             for (int j = 0; j < F; j++)
@@ -3647,13 +3647,13 @@ inv_S.b=0;
     vec z = {0};
     uni in[K] = {0};
     int a = 0;
-    unsigned short ss[M] = {0};
+    short ss[M] = {0};
 
      mkerr(zz,T);
     z = sind(zz, K * E);
     ymo o = bm_itr(z.x);
     v = chen(o.f);
-    unsigned short rr[M] = {0};
+    short rr[M] = {0};
     for (int i = 0; i < T; i++)
         ss[v.x[i]] = 1;
     for (int i = 0; i < M; i++)
@@ -3672,7 +3672,7 @@ inv_S.b=0;
     return;
 }
 
-vec dec(unsigned short ss[])
+vec dec(short ss[])
 {
     int i, j, k;
     vec v = {0};
@@ -3692,7 +3692,7 @@ vec dec(unsigned short ss[])
         printf("%d", ch[i]);
     printf("\n");
 
-    unsigned short uk[K] = {0};
+    short uk[K] = {0};
 
     for (int i = 0; i < K; i++)
     {
@@ -3721,10 +3721,10 @@ vec dec(unsigned short ss[])
 }
 
 // 鍵生成
-void key2(unsigned short g[])
+void key2(short g[])
 {
     FILE *fp;
-    unsigned short dd[K] = {0};
+    short dd[K] = {0};
     int i, j, k;
 
     printf("鍵を生成中です。４分程かかります。\n");
@@ -3930,7 +3930,7 @@ int ero(vec v)
 int ero2(vec v)
 {
     int i, j, count = 0;
-    unsigned short ya[N] = {0}, xa[N] = {0};
+    short ya[N] = {0}, xa[N] = {0};
 
     for (int i = 0; i < T; i++)
     {
@@ -4015,7 +4015,7 @@ int ero2(vec v)
 int ero3(vec v)
 {
     int i, j, count = 0;
-    unsigned short ya[N] = {0}, xa[N] = {0};
+    short ya[N] = {0}, xa[N] = {0};
 
     for (int i = 0; i < T; i++)
     {
@@ -4098,7 +4098,7 @@ int ero3(vec v)
 }
 void fun()
 {
-    unsigned short i, k;
+    short i, k;
 
     vec qq = {0};
     for (int i = 0b10001; i < 0b11111 + 1; i++)
@@ -4113,11 +4113,11 @@ void fun()
     }
 }
 
-vec newhalf(unsigned short e[K])
+vec newhalf(short e[K])
 {
     int i, j, k;
     vec v = {0};
-    unsigned short t[K] = {0};
+    short t[K] = {0};
 
     for (int i = 0; i < K / 2 + 1; i++)
     {
@@ -4147,7 +4147,7 @@ vec newhalf(unsigned short e[K])
     return v;
 }
 /*
-vec bfd(unsigned short ss[])
+vec bfd(short ss[])
 {
     int i, j, k, count = 0;
     vec v = {0};
@@ -4171,7 +4171,7 @@ vec bfd(unsigned short ss[])
     printf("\n");
     // exit(1);
 
-    unsigned short uk[K] = {0};
+    short uk[K] = {0};
 
     for( int i= 0; i < (K / 2 + 1) * E; i++)
     {
@@ -4216,9 +4216,9 @@ vec bfd(unsigned short ss[])
 }
 */
 
-unsigned short logx(unsigned short u)
+short logx(short u)
 {
-    unsigned short i;
+    short i;
     if (u == 0)
         return 1;
     for (int i = 1; i < O; i++)
@@ -4228,7 +4228,7 @@ unsigned short logx(unsigned short u)
     printf("baka-von\n");
 }
 
-vec kof2(unsigned short c, vec f)
+vec kof2(short c, vec f)
 {
     int i, j, k;
     vec b = {0}, h = {0};
@@ -4251,13 +4251,13 @@ vec kof2(unsigned short c, vec f)
     return h;
 }
 
-unsigned short minus(unsigned short a)
+short minus(short a)
 {
     int i;
     vec c = dick[fg[a]];
     vec b = {0}, d = (c);
     int k = deg((c)) + 1;
-    unsigned short u = 0;
+    short u = 0;
     vec f;
     printf("a=%d\n", a);
     for (int i = 0; i < k; i++)
@@ -4270,7 +4270,7 @@ unsigned short minus(unsigned short a)
     return u;
 }
 
-ymo bm_itr(unsigned short s[])
+ymo bm_itr(short s[])
 {
     vec U1[2][2] = {0}, U2[2][2][2] = {0}, null = {0};
     int i, j, k;
@@ -4470,7 +4470,7 @@ vec yes(ymo t)
     return ixi;
 }
 
-vec bms(unsigned short s[])
+vec bms(short s[])
 {
     int L = 0, m = -1, d[K] = {0}, k = 0, i, e;
     vec f = {0}, g = {0}, h, v, c = {0}, cc = {0};
@@ -4497,7 +4497,7 @@ vec bms(unsigned short s[])
             h = f;
             memset(v.x, 0, sizeof(v.x));
             v.x[k - m] = 1;
-            unsigned short a;
+            short a;
             a = (m < 0) ? 1 : oinv(d[m]);
             cc = (kof2(gf[mlt(fg[d[k]], a)], (g)));
             f = (vadd((f), (vmul((cc), (v)))));
@@ -4538,7 +4538,7 @@ vec bms(unsigned short s[])
     return f;
 }
 
-vec bma(unsigned short s[], int kk)
+vec bma(short s[], int kk)
 {
     int i, j, k, ll = 0, l, d[2 * K + 1] = {0};
     vec lo[2 * K + 1] = {0}, b[2 * K + 1] = {0}, t[2 * K + 1] = {0}, a = {0}, f = {0}, h = {0}, g = {0}, hh = {0};
@@ -4659,7 +4659,7 @@ vec bma(unsigned short s[], int kk)
 
 vec rev(vec f)
 {
-    unsigned short i, tmp, j = 0, c[512] = {0}, d[512] = {0}, count = 0;
+    short i, tmp, j = 0, c[512] = {0}, d[512] = {0}, count = 0;
     vec v = {0}, x = {0};
     vec w = {0};
 
@@ -4696,9 +4696,9 @@ vec rev(vec f)
     return x;
 }
 
-vec sendrier(unsigned short zz[N], int kk)
+vec sendrier(short zz[N], int kk)
 {
-    unsigned short syn[K / 2 + 1] = {0}, s = 0, rt[K * 3] = {0};
+    short syn[K / 2 + 1] = {0}, s = 0, rt[K * 3] = {0};
     int i, j, k;
     vec f = {0};
     vec v = {0}, x[K * 2] = {0};
@@ -4734,7 +4734,7 @@ vec sendrier(unsigned short zz[N], int kk)
     return f;
 }
 
-unsigned short bexp(unsigned short a)
+short bexp(short a)
 {
     int i;
     /*
@@ -4837,7 +4837,7 @@ vec sol(MTX a)
 // #define NN 16
 vec renri2(MTX a)
 {
-    unsigned short p, d;
+    short p, d;
     // int i, j, k;
     vec v = {0};
 
@@ -4887,8 +4887,8 @@ vec vv(int kk)
 {
     int i, j;
     vec r; //= mkpol();
-    unsigned short tr[N];
-    unsigned short ta[N] = {0};
+    short tr[N];
+    short ta[N] = {0};
 
     printf("van der\n");
 
@@ -4968,11 +4968,11 @@ aa:
 
 /* input: in0, in1 in GF((2^m)^t)*/
 /* output: out = in0*in1 */
-void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
+void GF_mul(short *out, short *in0, short *in1)
 {
     int i, j;
 
-    unsigned short prod[K * 2 - 1] = {0};
+    short prod[K * 2 - 1] = {0};
 
     for (i = 0; i < K * 2 - 1; i++)
         prod[i] = 0;
@@ -5126,9 +5126,9 @@ void GF_mul(unsigned short *out, unsigned short *in0, unsigned short *in1)
 /* input: f, element in GF((2^m)^t) */
 /* output: out, minimal polynomial of f */
 /* return: 0 for success and -1 for failure */
-int mykey(unsigned short *out, vec x)
+int mykey(short *out, vec x)
 {
-    unsigned short m[K + 1][K] = {0};
+    short m[K + 1][K] = {0};
     MTX a = {0};
     int i, j;
 
@@ -5176,9 +5176,9 @@ void v2(int kk)
 {
     int i, j, l = -1;
     vec f, r, tt, pp;
-    unsigned short tr[N], te[M] = {0};
+    short tr[N], te[M] = {0};
     ;
-    unsigned short ta[N] = {0};
+    short ta[N] = {0};
 
     printf("van der\n");
     
@@ -5211,7 +5211,7 @@ aa:
     }
 
     vec h = {0}, g = {0};
-    unsigned short tb[M] = {0}, tc[M] = {0}, td[M] = {0};
+    short tb[M] = {0}, tc[M] = {0}, td[M] = {0};
 
 bb:
     g = mkpol();
@@ -5268,7 +5268,7 @@ cc:
         printf("\n");
     }
     printf("\n");
-    unsigned short zz[M] = {0};
+    short zz[M] = {0};
     mkerr(zz, T);
     vec v = synd(zz, K);
     ymo y = bm_itr(v.x);
@@ -5281,9 +5281,9 @@ void v3(int kk)
 {
     int i, j;
     vec f;
-    unsigned short tr[N], te[M] = {0};
+    short tr[N], te[M] = {0};
     ;
-    unsigned short ta[N] = {0};
+    short ta[N] = {0};
 
     printf("van der\n");
 
@@ -5300,7 +5300,7 @@ aa:
 
     int l = -1;
     vec pp = {0}, tt = {0}, h = {0}, g = {0};
-    unsigned short tb[M] = {0}, tc[M] = {0}, td[M] = {0};
+    short tb[M] = {0}, tc[M] = {0}, td[M] = {0};
 
     h = mkpol();
     g = mkpol();
@@ -5337,7 +5337,7 @@ aa:
         printf("\n");
     }
     printf("\n");
-    unsigned short zz[M] = {0};
+    short zz[M] = {0};
     mkerr(zz, T);
     vec v = synd(zz, K);
     ymo y = bm_itr(v.x);
@@ -5366,16 +5366,16 @@ int bsub(int i, int j)
     return c;
 }
 
-vec to_vec(unsigned short a)
+vec to_vec(short a)
 {
     vec f = (dick[fg[a]]);
 
     return f;
 }
 
-unsigned short to_val(vec a)
+short to_val(vec a)
 {
-    unsigned short c = 0;
+    short c = 0;
 
     c = eval(a, Pr);
 
@@ -5396,7 +5396,7 @@ unsigned int gf_div(unsigned int a, unsigned int b)
         return 1 - i;
 }
 
-uni u2d(unsigned short s)
+uni u2d(short s)
 {
     vec v = dick[fg[s]];
     uni d = {s};
@@ -5406,7 +5406,7 @@ uni u2d(unsigned short s)
     return d;
 }
 
-unsigned short d2u(uni d)
+short d2u(uni d)
 {
     vec v = {d.fugo.b0, d.fugo.b1, d.fugo.b2, d.fugo.flag};
     bool c = __builtin_parity(d.u) ^ 1;
@@ -5437,7 +5437,7 @@ vec m2v(short a)
 void forney(ymo t)
 {
     vec v = {0}, tmp[T] = {0}, w = {0}, kai = {0}, y = {0}, x;
-    unsigned short u = 0, z, a, n;
+    short u = 0, z, a, n;
     x = t.f;
     if (x.x[0] > 0)
     {
@@ -5481,7 +5481,7 @@ vec deli(vec a, vec b)
 
 void test1()
 {
-    unsigned short zz[M] = {0};
+    short zz[M] = {0};
 
     printf("aa %d \n", plus(6, 5));
     // exit(1);
@@ -5590,7 +5590,7 @@ void test1()
     }
 }
 
-int ind(unsigned short a)
+int ind(short a)
 {
     return logx(a) + 1;
 }
@@ -5756,11 +5756,11 @@ void stamena()
 int main(void)
 {
     int i, a, b, c;
-    unsigned short zz[M] = {0};
+    short zz[M] = {0};
     vec r = {0}, g = {0};
     vec v = {0}, x = {0}, f = {0};
     static CTX R = {0}, OO = {0}; //, S = {0}, inv_S = {0};
-    unsigned short s[K + 1] = {0, 3, 0, 6, 0};
+    short s[K + 1] = {0, 3, 0, 6, 0};
     static data d = {17, 23, 31}; //, dd[K * 3][N] = {0};
     uni e = {d};
 
@@ -5794,7 +5794,7 @@ int main(void)
     printf("%d %d %d\n", minus(1), minus(2), minus(3));
     //exit(1);
 
-    unsigned short z1[M] = {0};
+    short z1[M] = {0};
     z1[1] = 1;
     z1[2] = 1;
     pk_gen();
@@ -5803,8 +5803,8 @@ int main(void)
     // big = fls;
     int count = 0;
     uni on[4] = {0};
-    unsigned short es = 0;
-    unsigned short ee[K] = {0};
+    short es = 0;
+    short ee[K] = {0};
 
     for (int i = 0; i < K * E; i++)
     {
@@ -5827,7 +5827,7 @@ int main(void)
 
     transi(OO);
     // exit(1);
-    unsigned short ss[K * E] = {0};
+    short ss[K * E] = {0};
     for (int i = 0; i < K * E; i++)
     {
         for (int j = 0; j < M; j++)
@@ -5858,7 +5858,7 @@ int main(void)
             x.x[i] = (x.x[i] + inv_S.x[i][j] * v.x[j]) % Pr;
         }
     }
-    unsigned short oo[K] = {0};
+    short oo[K] = {0};
     for (int i = 0; i < K; i++)
     {
         op[i].fugo.b0 = x.x[i * E];
@@ -5942,7 +5942,7 @@ int main(void)
 
         int u;
         uni let = {0};
-        unsigned short h[K * E][M] = {0};
+        short h[K * E][M] = {0};
         vec me = {0}, z;
         memset(v.x, 0, sizeof(v.x));
         memset(x.x, 0, sizeof(x.x));
@@ -6045,7 +6045,7 @@ int main(void)
         // exit(1);
         ymo t = bm_itr(r.x);
         vec ll = r;
-        // unsigned short u;
+        // short u;
         printpol((t.h));
         printf("  trf\n");
         r = chen(t.f);
