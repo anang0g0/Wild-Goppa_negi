@@ -111,7 +111,7 @@ typedef union
 
 typedef union
 {
-  char x[K * EXP*2][M];
+  char x[K * EXP][M];
   uni d[K*EXP][M];
   bool b;
 } CTX;

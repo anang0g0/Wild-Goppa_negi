@@ -39,7 +39,7 @@
 #include "inv_mat.c"
 
 #define TH omp_get_max_threads()
-// #define O 27 // 1331,2197,4913,6859,3125,2187,19683,29791,12167
+// #define O 27 // 1331,2197,4913,6859,3125,2187,19683,29791,12167,16807
 //  #define F 16
 extern unsigned long xor128(void);
 extern int mlt(int x, int y);
@@ -63,7 +63,7 @@ ymo bm_itr(unsigned short s[]);
 // #pragma omp threadprivate(mat)
 // シンドロームのコピー
 unsigned short sy[K] = {0};
-unsigned short pp[13][4] = {{0, 0, 9, 2}, {0, 0, 11, 2}, {0, 0, 16, 3}, {0, 0, 15, 2}, {0, 0, 1, 2}, {0, 1, 0, 2}, {0, 0, 1, 1}, {0, 0, 1, 2}, {1, 1, 2, 2}, {0, 0, 1, 2}, {0, 0, 21, 5}, {0, 0, 30, 3}, {0, 0, 1, 4}};
+unsigned short pp[13][4] = {{0, 0, 9, 2}, {0, 0, 11, 2}, {0, 0, 16, 3}, {0, 0, 15, 2}, {0, 0, 1, 2}, {0, 1, 0, 2}, {0, 0, 1, 1}, {0, 0, 6, 3}, {1, 1, 2, 2}, {0, 0, 1, 2}, {0, 0, 21, 5}, {0, 0, 30, 3}, {0, 0, 1, 4}};
 unsigned short pt[3] = {0, 1, 2};
 static CTX S, inv_S;
 static CTX big = {0};
@@ -756,10 +756,10 @@ vec opowmod(vec f, vec mod, int n)
     // int i, j = 0;
 
     // 繰り返し２乗法
-    for (int i = 0; i < 11; i++)
+    for (int i = 0; i < Pr; i++)
     {
         //f = vmul(vmul(f, f),f);
-        f=opow(f,11);
+        f=opow(f,Pr);
         if (deg(f) > deg(mod))
             f = vmod(f, mod);
     }
@@ -925,7 +925,7 @@ void mkmf()
         for (int i = 0; i < 4; i++)
             ccp[i] = pp[9][i];
     }
-    if (O == 19683)
+    if (O == 177147)
     {
         for (int i = 0; i < 4; i++)
             ccp[i] = pp[8][i];
@@ -2095,7 +2095,7 @@ int ben_or(vec f)
 
     v.x[1] = 1;
     s = (v);
-    r.x[11]=1;
+    r.x[Pr]=1;
     printpol(r);
     printf("kofwojhfow");
     //exit(1);
@@ -2564,7 +2564,7 @@ void decrypt(vec w)
         }
     }
 
-    char buf0[8192] = {0}, buf1[10] = {
+    char buf0[O] = {0}, buf1[10] = {
                                0};
 
     // #pragma omp parallel for
@@ -2841,7 +2841,7 @@ void test(vec w, unsigned short zz[])
      '4', '5', '6', '7', '8', '9', '+', '/',
      };
    */
-    char buf[8192] = {0}, buf1[10] = {
+    char buf[O] = {0}, buf1[10] = {
                               0};
     unsigned char sk[64] = {0};
     // unsigned short s[K]={0};
@@ -3263,12 +3263,12 @@ aa:
             // exit(1);
         }
     }
-    */
+    
     //exit(1);
     l=-1;
     while (l == -1)
     {
-        w = mkpol();
+
         l = ben_or(w);
         if(l==-1)
         goto aa;
@@ -3281,7 +3281,8 @@ aa:
         ii++;
         //
     }
-    
+    */
+    w = mkpol();    
     printsage(w);
 //    printf("wwwwwww\n");
 //exit(1);
@@ -3496,6 +3497,27 @@ vec zind(unsigned short zz[], int kk)
 void printuni(uni a)
 {
     printf("%d %d %d\n", a.fugo.b0, a.fugo.b1, a.fugo.b2);
+}
+
+void mkerr(unsigned short *z1, int num)
+{
+    int j, l;
+
+    j = 0;
+
+    memset(z1, 0, sizeof(z1[N]));
+
+    while (j < num)
+    {
+        l = rand() % (M);
+        // printf ("l=%d\n", l);
+        if (0 == z1[l])
+        {
+            z1[l] = 2;
+            // printf("l=%d\n", l);
+            j++;
+        }
+    }
 }
 
 // Niederreiter暗号の公開鍵を作る(Gvecpa)
@@ -4074,28 +4096,6 @@ int ero3(vec v)
 
     return count;
 }
-
-void mkerr(unsigned short *z1, int num)
-{
-    int j, l;
-
-    j = 0;
-
-    memset(z1, 0, sizeof(z1[N]));
-
-    while (j < num)
-    {
-        l = rand() % (M);
-        // printf ("l=%d\n", l);
-        if (0 == z1[l])
-        {
-            z1[l] = 2;
-            // printf("l=%d\n", l);
-            j++;
-        }
-    }
-}
-
 void fun()
 {
     unsigned short i, k;
