@@ -1133,9 +1133,9 @@ int main()
     // exit(1);
     srand(clock());
     // mkg(K); // Goppa Code (EEA type)
-     van(K); // RS-Code generate
+    // van(K); // RS-Code generate
     // vv(K);           // Goppa Code's Parity Check (Berlekamp type)
-    //mkd(f, K);
+    mkd(f, K);
     // while(1)
     int count = 0;
 
