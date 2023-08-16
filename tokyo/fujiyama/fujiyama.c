@@ -1060,7 +1060,7 @@ ymo bm_itr(unsigned short s[])
     U2[0][0][0].x[0] = 1;    // f[0];
     U2[0][0][1].x[0] = 0;    // fai[0];
     U2[0][1][0].x[0] = 0;    // g[0];
-    U2[0][1][1].x[0] = -(1); // thi[0];
+    U2[0][1][1].x[0] = N-(1); // thi[0];
     int m = 0, d = 0, p = 2 * d - m - 1, myu = 0;
     printf("m=%d d=%d myu=%d p=%d\n", m, d, myu, p);
     for (m = 0; m < K; m++)
@@ -1076,7 +1076,7 @@ ymo bm_itr(unsigned short s[])
         if (myu == 0 || p >= 0)
         {
             U1[0][0].x[0] = 1;
-            U1[0][1].x[p] = -(myu);
+            U1[0][1].x[p] = N-(myu);
             U1[1][0].x[0] = 0;
             U1[1][1].x[0] = 1;
             // exit(1);
@@ -1088,7 +1088,7 @@ ymo bm_itr(unsigned short s[])
                 p = -1 * (p);
             }
             U1[0][0].x[p] = 1;
-            U1[0][1].x[0] = -(myu);
+            U1[0][1].x[0] = N-(myu);
             U1[1][0].x[0] = oinv(myu, N);
             U1[1][1].x[0] = 0;
         }
@@ -1127,7 +1127,7 @@ int main()
     unsigned short s[K + 1] = {0}, z1[N] = {0};
     vec v = {0}, x = {0};
     OP f = {0};
-    ymo g = {0};
+
 
     printf("%d %d %d\n", 3, oinv(3, N), 3 * oinv(3, N) % N);
     // exit(1);
@@ -1144,15 +1144,15 @@ int main()
     mkerr(z1, T);    // generate error vector
     f = synd(z1, K); // calc syndrome
     x = o2v(f);      // transorm to vec
-    /*
-    ymo e=bm_itr(x.x);
-    f=v2o(e.f);
-    chen(e.f);
+    
+    ymo g=bm_itr(x.x);
+    f=v2o(g.f);
+    //chen(e.f);
     for(i=0;i<N;i++)
     if(trace(f,i)%N==0)
     printf("i=%d\n",i);
     exit(1);
-    */
+    
     MTX b = {0};
 
     for (i = 0; i < K; i++)
