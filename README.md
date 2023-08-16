@@ -14,6 +14,9 @@ $GF(3^9)=16983$ (20230207　実装済み、odd_gen.c)
 
 $GF(23^3)=12167$ (20230302 実装済み。 vmo.c)
 
+$GF(7^5)=16807$ (20230816　実装済み。 vmo.c)
+
+
 参考文献  
 
 １． The Key Equation for One-Point Codes. M.E.O'Sullivan et al. 2008
