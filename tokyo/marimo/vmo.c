@@ -3536,8 +3536,8 @@ void pk_gen()
     // zz[1] = 1;
     // zz[2] = 1;
     //exit(1);
-    for(i=1;i<T+1;i++)
-    zz[i]=1;
+    for(i=0;i<T;i++)
+    zz[i+1]=1;
     //mkerr(zz, T);
     vec x = synd(zz, K);
     ymo m = bm_itr(x.x);

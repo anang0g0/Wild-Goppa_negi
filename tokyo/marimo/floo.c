@@ -3523,6 +3523,11 @@ inv_S.b=0;
             printf("%d,", i);
     }
     printf("\n");
+    for (int i = 0; i < M; i++){
+        if (zz[i] > 0)
+            printf("%d,", i);
+    }
+    printf("\n");
     exit(1);
 
     return;
