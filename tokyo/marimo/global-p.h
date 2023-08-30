@@ -7,19 +7,18 @@
 // Nは符号の長さ、Kが符号の次元、Tは訂正エラー数
 // を表す。ここではDは符号長にしている。
 #define N 16807  // 元の数
-#define M 16807  // 符号長　M<=N 3072
-#define K (128) // 符号の次元
-#define DEG (20000)
+#define M  16807 // 符号長　M<=N 3072
+#define K (8) // 符号の次元
+#define DEG (16807)
 #define T (K / 2) // エラーの数
 #define E (5)     // 拡大体の拡大次数
 // #define D (2187) //符号長（短縮符号）
 #define F K *E // 2040
-//#define BXP 15 //拡大体のビットサイズ
-#define EXP 5  // degree
+#define EXP E  // degree
 #define Pr 7   // 基礎体
 // #define O 2197 // 1331,2197,4913,6859,3125,2187,19683
-#define ORD 16807 // 1331,2197,4913,6859,3125,2187,19683,29791,16807
-#define O 16807
+#define ORD N // 1331,2197,4913,6859,3125,2187,19683,29791,16807,24389
+#define O ORD
 
 
 #define V 3 // 変数の数

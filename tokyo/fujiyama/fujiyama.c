@@ -1139,9 +1139,9 @@ int main()
     // while(1)
     int count = 0;
 
-    for (i = 0; i < N; i++)
-        z1[i] = 0;
-    mkerr(z1, T);    // generate error vector
+    for (i = 1; i < T+1; i++)
+        z1[i] = 1;
+    //mkerr(z1, T);    // generate error vector
     f = synd(z1, K); // calc syndrome
     x = o2v(f);      // transorm to vec
     

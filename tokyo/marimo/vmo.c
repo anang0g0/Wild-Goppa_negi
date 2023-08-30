@@ -63,7 +63,7 @@ ymo bm_itr(short s[]);
 // #pragma omp threadprivate(mat)
 // シンドロームのコピー
 short sy[K] = {0};
-short pp[13][4] = {{0, 0, 9, 2}, {0, 0, 11, 2}, {0, 0, 16, 3}, {0, 0, 15, 2}, {0, 0, 1, 2}, {0, 1, 0, 2}, {0, 0, 1, 1}, {0, 0, 6, 3}, {0, 0, 6, 3}, {0, 0, 1, 2}, {0, 0, 21, 5}, {0, 0, 30, 3}, {0, 0, 1, 4}};
+short pp[13][4] = {{0, 0, 9, 2}, {0, 0, 11, 2}, {0, 0, 16, 3}, {0, 0, 15, 2}, {0, 0, 1, 2}, {0, 1, 0, 2}, {0, 0, 1, 1}, {0, 0, 27, 2}, {0, 0, 6, 3}, {0, 0, 1, 2}, {0, 0, 21, 5}, {0, 0, 30, 3}, {1, 1, 2, 2}};
 short pt[3] = {0, 1, 2};
 static CTX S, inv_S;
 static CTX big = {0};
@@ -915,7 +915,7 @@ void mkmf()
         for (int i = 0; i < 4; i++)
             ccp[i] = pp[6][i];
     }
-    if (O == 27)
+    if (O == 24389)
     {
         for (int i = 0; i < 4; i++)
             ccp[i] = pp[7][i];
@@ -940,7 +940,7 @@ void mkmf()
         for (int i = 0; i < 4; i++)
             ccp[i] = pp[11][i];
     }
-    if (O == 49)
+    if (O == 19683)
     {
         for (int i = 0; i < 4; i++)
             ccp[i] = pp[12][i];
@@ -3530,19 +3530,24 @@ void pk_gen()
     static CTX Q = {0}, O_bin = {0};
     // R = {0}, R_bin = {0},
     short zz[M] = {0};
+    
     mkd(w,K);
+    
     // zz[1] = 1;
     // zz[2] = 1;
     //exit(1);
-    mkerr(zz, T);
+    for(i=1;i<T+1;i++)
+    zz[i]=1;
+    //mkerr(zz, T);
     vec x = synd(zz, K);
     ymo m = bm_itr(x.x);
     chen(m.f);
+    printf("answer\n");
     for(i=0;i<N;i++)
     if(zz[i]>0)
     printf("%d,",i);
     printf("\n");
-     exit(1);
+    exit(1);
     //  w = mkd(w, K);
     //   w = mkg(K);
     //   half(K / 2 + 1);
@@ -3580,8 +3585,12 @@ void pk_gen()
         {
             D.x[i * E + 0][j] = big.d[i][j].fugo.b0;
             D.x[i * E + 1][j] = big.d[i][j].fugo.b1;
-            if (E == 3)
+            if (E >= 3)
                 D.x[i * E + 2][j] = big.d[i][j].fugo.b2;
+            if(E==5){
+                D.x[i * E + 3][j] = big.d[i][j].fugo.b2;
+                D.x[i * E + 4][j] = big.d[i][j].fugo.b2;
+                }
         }
     }
     Pgen();
@@ -5762,6 +5771,7 @@ int main(void)
     static CTX R = {0}, OO = {0}; //, S = {0}, inv_S = {0};
     short s[K + 1] = {0, 3, 0, 6, 0};
     static data d = {17, 23, 31}; //, dd[K * 3][N] = {0};
+    //static TX d={5,7};
     uni e = {d};
 
     e.fugo.flag = __builtin_parity(e.u);

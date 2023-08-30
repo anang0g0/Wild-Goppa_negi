@@ -21,7 +21,7 @@ typedef struct
 
 typedef struct
 {
-  short x[20000]; // 配列の添字を次数に、配列の値を係数に持つ多項式の表現
+  short x[O]; // 配列の添字を次数に、配列の値を係数に持つ多項式の表現
 } vec;
 
 // GF(23^3)
@@ -55,13 +55,14 @@ typedef struct
   unsigned short b2 : 3;
   unsigned short b4 : 3;
   unsigned short b5 : 3;
-  bool b : 1;
+  unsigned short flag : 1;
   // unsigned short u;
 } TX;
 
 typedef union
 {
   data fugo;
+  //TX fugo;
   unsigned short u;
   bool b;
 } uni;

@@ -620,7 +620,7 @@ OP synd(unsigned short zz[], int kk)
 }
 
 // chen探索
-void chen(vec f)
+vec chen(vec f)
 {
     vec e = {0};
     int i, count = 0, n, x = 0;
@@ -637,16 +637,16 @@ void chen(vec f)
         }
         if (z == 0)
         {
-            e.x[count] = x;
+            e.x[fg[x]] = x;
             count++;
-            printf("change %d\n", (fg[x]));
+            //printf("change %d\n", (fg[x]));
         }
     }
     if(count<T){
         printf("few baka\n");
         exit(1);
     }
-    //return e;
+    return e;
 }
 
 vec bma(unsigned short s[])
@@ -889,11 +889,11 @@ int main()
     // van(K);          // RS-Code generate
     vv(K);
     while(1){
-    for(i=0;i<N;i++)
-    z1[i]=0;
+    for(i=1;i<T+1;i++)
+    z1[i]=1;
     //mkerr(z1, T);    // generate error vector
-    z1[4] = 1;
-    z1[2] = 1;
+    //z1[4] = 1;
+    //z1[2] = 1;
 
     f = synd(z1, K); // calc syndrome
     x = o2v(f);      // transorm to vec
@@ -911,7 +911,11 @@ int main()
         if (z1[i] > 0)
             printf("chan_ans=%d\n", i); // print answer
     }
-    chen(v);
+    x=chen(v);
+    for(i=0;i<N;i++){
+    if(x.x[i]>0)
+    printf("%d\n",fg[x.x[i]]);
+    }
     exit(1);
 }
     printf("%d\n", deg(v));
