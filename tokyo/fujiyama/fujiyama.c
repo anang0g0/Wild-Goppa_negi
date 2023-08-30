@@ -210,13 +210,14 @@ void van(int kk)
     int i, j;
 
     printf("van der\n");
-    /*
-    for (i = 0; i < N; i++){
+
+    for (i = 0; i < N; i++)
+    {
         mat[i][0] = vb[0][i] = 1;
         printf("%d,", vb[0][i]);
     }
     printf("\n");
-    */
+
     // #pragma omp parallel for private(i, j)
     for (i = 0; i < kk; i++)
     {
@@ -239,7 +240,7 @@ void ogt(unsigned short pp[], int kk)
     {
         for (j = 0; j < kk - i; j++)
         {
-            gt[i][j + i] = g[j];
+            gt[i][j + i] = pp[j];
         }
     }
     for (i = 0; i < kk; i++)
@@ -352,7 +353,7 @@ void printsage(vec a)
             b.a = a.x[i];
             b.n = i;
             j = v2a(b);
-            printf("B(%d)*X**%d+", j, i); // for GF(2^m)
+            printf("B('a^%d')*X**%d+", j, i); // for GF(2^m)
         }
     }
 }
@@ -635,7 +636,7 @@ vec renritu(MTX a)
 }
 
 // #define NN 16
-OP sol(MTX a)
+vec sol(MTX a)
 {
     unsigned int p, d;
     int i, j, k;
@@ -704,7 +705,6 @@ OP sol(MTX a)
     pol = setpol(x.x, K / 2 + 1);
     printpol(o2v(pol));
     printf(" ==key\n");
-
     for (i = 1; i < N; i++)
     {
         // v.x[i] = 0;
@@ -715,7 +715,7 @@ OP sol(MTX a)
         }
     }
 
-    return pol;
+    return vv;
 }
 
 vec mkd(OP w, int kk)
@@ -739,41 +739,7 @@ aa:
     l = -1;
     ii = 0;
     // irreducible gvecpa code (既役多項式が必要なら、ここのコメントを外すこと。)
-    /*
-     while (l < 0)
-    {
-        for (i = 0; i < K; i++)
-            pp.x[i] = rand() % N;
-        mykey(tt.x, pp);
-        tt.x[K] = 1;
-        l = ben_or(tt);
-        if (l == 0)
-        {
-            printf("\n");
-            printsage(tt);
-            printf(" ==irr\n");
-            // exit(1);
-        }
-    }
 
-    //exit(1);
-    l=-1;
-    while (l == -1)
-    {
-
-        l = ben_or(w);
-        if(l==-1)
-        goto aa;
-        printf("irr=%d\n", l);
-        if (ii > 300)
-        {
-            printf("too many error\n");
-            exit(1);
-        }
-        ii++;
-        //
-    }
-    */
     w = mkpol();
     printsage(o2v(w));
     //    printf("wwwwwww\n");
@@ -1057,10 +1023,10 @@ ymo bm_itr(unsigned short s[])
     int i, j, k;
     ymo t = {0};
 
-    U2[0][0][0].x[0] = 1;    // f[0];
-    U2[0][0][1].x[0] = 0;    // fai[0];
-    U2[0][1][0].x[0] = 0;    // g[0];
-    U2[0][1][1].x[0] = N-(1); // thi[0];
+    U2[0][0][0].x[0] = 1;       // f[0];
+    U2[0][0][1].x[0] = 0;       // fai[0];
+    U2[0][1][0].x[0] = 0;       // g[0];
+    U2[0][1][1].x[0] = N - (1); // thi[0];
     int m = 0, d = 0, p = 2 * d - m - 1, myu = 0;
     printf("m=%d d=%d myu=%d p=%d\n", m, d, myu, p);
     for (m = 0; m < K; m++)
@@ -1076,7 +1042,7 @@ ymo bm_itr(unsigned short s[])
         if (myu == 0 || p >= 0)
         {
             U1[0][0].x[0] = 1;
-            U1[0][1].x[p] = N-(myu);
+            U1[0][1].x[p] = N - (myu);
             U1[1][0].x[0] = 0;
             U1[1][1].x[0] = 1;
             // exit(1);
@@ -1088,7 +1054,7 @@ ymo bm_itr(unsigned short s[])
                 p = -1 * (p);
             }
             U1[0][0].x[p] = 1;
-            U1[0][1].x[0] = N-(myu);
+            U1[0][1].x[0] = N - (myu);
             U1[1][0].x[0] = oinv(myu, N);
             U1[1][1].x[0] = 0;
         }
@@ -1128,67 +1094,69 @@ int main()
     vec v = {0}, x = {0};
     OP f = {0};
 
-
     printf("%d %d %d\n", 3, oinv(3, N), 3 * oinv(3, N) % N);
     // exit(1);
     srand(clock());
     // mkg(K); // Goppa Code (EEA type)
     // van(K); // RS-Code generate
-    // vv(K);           // Goppa Code's Parity Check (Berlekamp type)
     mkd(f, K);
-    // while(1)
-    int count = 0;
-
-    for (i = 1; i < T+1; i++)
-        z1[i] = 1;
-    //mkerr(z1, T);    // generate error vector
-    f = synd(z1, K); // calc syndrome
-    x = o2v(f);      // transorm to vec
-    
-    ymo g=bm_itr(x.x);
-    f=v2o(g.f);
-    //chen(e.f);
-    for(i=0;i<N;i++)
-    if(trace(f,i)%N==0)
-    printf("i=%d\n",i);
-    exit(1);
-    
-    MTX b = {0};
-
-    for (i = 0; i < K; i++)
-        v.x[K - 1 - i] = x.x[i];
-
-    for (i = 0; i < K / 2; i++)
+    // vv(K);           // Goppa Code's Parity Check (Berlekamp type)
+    while (1)
     {
-        for (int j = 0; j < K / 2 + 1; j++)
+        for (i = 0; i < T; i++)
+            z1[i + 1] = 1;
+        // mkerr(z1, T);    // generate error vector
+        f = synd(z1, K); // calc syndrome
+        x = o2v(f);      // transorm to vec
+        // r = bma(x.x);    // Berlekamp-Massey Algorithm
+        ymo y = bm_itr(x.x);
+        chen(y.f);
+        for (i = 0; i < N; i++)
+            if (z1[i] > 0)
+                printf("i=%d\n", i);
+        // exit(1);
+        MTX b = {0};
+
+        for (i = 0; i < K; i++)
+            v.x[K - 1 - i] = x.x[i];
+
+        for (i = 0; i < K / 2; i++)
         {
-            b.x[i][j] = v.x[i + j];
-            // printf("%d,",b.x[i][i+j]);
+            for (int j = 0; j < K / 2 + 1; j++)
+            {
+                b.x[i][j] = v.x[i + j];
+                // printf("%d,",b.x[i][i+j]);
+            }
+            // printf("\n");
         }
+        printf("\n");
+        for (i = 0; i < K / 2; i++)
+        {
+            for (int j = 0; j < K / 2 + 1; j++)
+                printf("e%d,", b.x[i][j]);
+            printf("\n");
+        }
+        x = sol(b);
+        for (i = 0; i < N; i++)
+        {
+            if (z1[i] != x.x[i])
+            {
+                printf("baka=%d\n", i);
+                exit(1);
+            }
+        }
+        int flg = 0;
+        for (i = 0; i < N; i++)
+        {
+            if (z1[i] > 0 && x.x[i] > 0)
+            {
+                printf("%d %d\n", z1[i], i);
+                flg++;
+            }
+        }
+        if (flg == T)
+            exit(1);
         // printf("\n");
     }
-    printf("\n");
-    for (i = 0; i < K / 2; i++)
-    {
-        for (int j = 0; j < K / 2 + 1; j++)
-            printf("e%d,", b.x[i][j]);
-        printf("\n");
-    }
-    f = sol(b);
-
-    for (i = 0; i < N; i++)
-    {
-        if (trace(f, i) % N != 0 && z1[i]>0)
-        {
-            printf("baka\n");
-            exit(1);
-            //count++;
-            //printf("i=%d %d\n", i, z1[i]);
-        }
-    }
-/*
-    if (count != T)
-        printf("baka\n");
-*/
     return 0;
 }
