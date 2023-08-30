@@ -3044,13 +3044,13 @@ aa:
 }
 
 // BMA 専用（多項式と次元指定）
-vec mkc(vec w, int kk)
+vec mkc()
 {
     int i, j, k, l, ii = 0;
 
     unsigned short tr[N] = {0};
     unsigned short ta[N] = {0};
-    vec v = {0};
+    vec v = {0},w;
     unsigned short po[K + 1] = {1, 0, 1, 0, 5};
     // vec w={0};
     vec r = {0};
@@ -3116,9 +3116,9 @@ aa:
     printf("sagemath で既約性を検査してください！\n");
     memset(v.x, 0, sizeof(v.x));
     //  v=rev(w);
-    van(kk);
+    van(K);
     //  v=(w);
-    ogt(g, kk);
+    ogt(r.x, K);
 
     // wait();
 
@@ -3130,7 +3130,7 @@ aa:
 
     for (int j = 0; j < N; j++)
     {
-        for (int i = 0; i < kk; i++)
+        for (int i = 0; i < K; i++)
         {
             mat[i][j] = gf[mlt(fg[vb[i][j]], tr[j])];
         }
@@ -3390,15 +3390,19 @@ void pk_gen()
     // R = {0}, R_bin = {0},
     unsigned short zz[M] = {0};
     vv(K);
+    //vv(K);
     // zz[1] = 1;
     // zz[2] = 1;
-   /*
+   
     mkerr(zz, T);
     vec x = synd(zz, K);
     ymo m = bm_itr(x.x);
     chen(m.f);
-    */
-    // exit(1);
+    for(i=0;i<N;i++)
+    if(zz[i]>0)
+    printf("i=%d %d\n",i,zz[i]);
+    exit(1);
+    
     //  w = mkd(w, K);
     //   w = mkg(K);
     //   half(K / 2 + 1);
@@ -3456,24 +3460,7 @@ inv_S.b=0;
         }
         inv_S = genS(S);
     } //while (inv_S.b == 0);
-    // exit(1);
-    
-    /*
-        unsigned short sa[4][4] = {{0,0,1,1},{2,0,1,0},{1,2,1,2},{0,0,1,2}};
-        unsigned short ans[4][4] = {{1, 0, 2, 0}, {0, 0, 2, 2}, {2, 1, 0, 0}, {2, 1, 2, 1}};
-        for (int k = 0; k < F; k++)
-        {
-            for (int j = 0; j < F; j++)
-                S.x[k][j] = sa[k][j];
-        }
-        inv_S=genS(S);
-        if(inv_S.b==0){
-        printf("baka\n");
-        exit(1);
-        }
-        // S.x[4][4]={{1,2,3,4},{1,2,3,4},{1,2,3,4},{1,2,3,4}};
-    exit(1);
-    */
+
     Pgen();
     for (int i = 0; i < M; i++)
         printf("i%d,", P[i]);
@@ -4815,7 +4802,7 @@ aa:
     }
     printf("%d %d\n", r.x[0], r.x[K]);
     // exit(1);
-    memset(pp.x, 0, sizeof(pp.x));
+    //memset(pp.x, 0, sizeof(pp.x));
     // for(int i=1;i<K+1;i++)
     //     pp.x[i]=r.x[i];
     ogt(r.x, K);
@@ -5156,7 +5143,11 @@ cc:
     vec v = synd(zz, K);
     ymo y = bm_itr(v.x);
     chen(y.f);
-    // exit(1);
+    for(i=0;i<N;i++)
+    if(zz[i]>0)
+    printf("i=%d %d\n",i,zz[i]);
+
+    exit(1);
     //  bdet();
 }
 

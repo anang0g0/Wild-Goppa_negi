@@ -3340,7 +3340,7 @@ aa:
     {
         for (int j = 0; j < K; j++)
         {
-            mat[j][i] = gf[mlt(fg[vb[j][i]], tr[i])];
+            ma[j][i] = gf[mlt(fg[vb[j][i]], tr[i])];
         }
     }
     
@@ -3531,8 +3531,8 @@ void pk_gen()
     // R = {0}, R_bin = {0},
     short zz[M] = {0};
     
-    mkd(w,K);
-    
+    //mkd(w,K);
+    vv(K);
     // zz[1] = 1;
     // zz[2] = 1;
     //exit(1);
@@ -3547,7 +3547,7 @@ void pk_gen()
     if(zz[i]>0)
     printf("%d,",i);
     printf("\n");
-    exit(1);
+    //exit(1);
     //  w = mkd(w, K);
     //   w = mkg(K);
     //   half(K / 2 + 1);
@@ -3673,6 +3673,11 @@ inv_S.b=0;
         rr[i] = ss[P[i]];
     for (int i = 0; i < M; i++){
         if (rr[i] > 0)
+            printf("%d,", i);
+    }
+    printf("\n");
+    for (int i = 0; i < M; i++){
+        if (zz[i] > 0)
             printf("%d,", i);
     }
     printf("\n");
