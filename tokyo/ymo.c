@@ -210,21 +210,21 @@ void van(int kk)
     int i, j;
 
     printf("van der\n");
-    /*
+    
     for (i = 0; i < N; i++){
         mat[i][0] = vb[0][i] = 1;
         printf("%d,", vb[0][i]);
     }
     printf("\n");
-    */
+    
     // #pragma omp parallel for private(i, j)
-    for (i = 0; i < kk; i++)
+    for (i = 1; i < kk; i++)
     {
-        for (j = 1; j < N; j++)
+        for (j = 0; j < N; j++)
         {
-            vb[i][j] = mltn(i + 1, j);
-            printf("g%d,", vb[i][j - 1]);
-            mat[j - 1][i] = vb[i][j - 1];
+            vb[i][j] = mltn(i , j);
+            printf("g%d,", vb[i][j]);
+            mat[j][i] = vb[i][j];
         }
         printf("\n");
     }
@@ -704,7 +704,7 @@ vec sol(MTX a)
     pol = setpol(x.x, K / 2 + 1);
     printpol(o2v(pol));
     printf(" ==key\n");
-    for (i = 1; i < N; i++)
+    for (i = 0; i < N; i++)
     {
         // v.x[i] = 0;
         if (trace(pol, i) % N == 0)
@@ -869,7 +869,9 @@ int main()
     // mkg(K); // Goppa Code (EEA type)
     van(K); // RS-Code generate
     // vv(K);           // Goppa Code's Parity Check (Berlekamp type)
-    mkerr(z1, T);    // generate error vector
+    for(i=0;i<T;i++)
+    z1[i]=1;
+    //mkerr(z1, T);    // generate error vector
     f = synd(z1, K); // calc syndrome
     x = o2v(f);      // transorm to vec
     // r = bma(x.x);    // Berlekamp-Massey Algorithm
