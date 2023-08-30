@@ -6,16 +6,16 @@
 // 符号のパラーメータの指定。通常[N,K,T]として、
 // Nは符号の長さ、Kが符号の次元、Tは訂正エラー数
 // を表す。ここではDは符号長にしている。
-#define N 16807  // 元の数
-#define M  16807 // 符号長　M<=N 3072
+#define N 1331  // 元の数
+#define M  N // 符号長　M<=N 3072
 #define K (8) // 符号の次元
-#define DEG (16807)
+#define DEG (N)
 #define T (K / 2) // エラーの数
-#define E (5)     // 拡大体の拡大次数
+#define E (3)     // 拡大体の拡大次数
 // #define D (2187) //符号長（短縮符号）
 #define F K *E // 2040
 #define EXP E  // degree
-#define Pr 7   // 基礎体
+#define Pr 11   // 基礎体
 // #define O 2197 // 1331,2197,4913,6859,3125,2187,19683
 #define ORD N // 1331,2197,4913,6859,3125,2187,19683,29791,16807,24389
 #define O ORD

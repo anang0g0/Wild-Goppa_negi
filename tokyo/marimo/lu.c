@@ -26,7 +26,7 @@ int is_reg(MTX cc, MTX *R)
   unsigned char inv_a[K * E][K * E] = {0}; // ここに逆行列が入る
   unsigned char buf;                       // 一時的なデータを蓄える
   int n = K * E;                           // 配列の次数
-  MTX O = {0};
+  //MTX OO = {0};
 
   while (flg != F)
   {
