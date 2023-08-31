@@ -210,22 +210,21 @@ void van(int kk)
     int i, j;
 
     printf("van der\n");
-
-    for (i = 0; i < N; i++)
-    {
+    
+    for (i = 0; i < N; i++){
         mat[i][0] = vb[0][i] = 1;
         printf("%d,", vb[0][i]);
     }
     printf("\n");
-
+    
     // #pragma omp parallel for private(i, j)
-    for (i = 0; i < kk; i++)
+    for (i = 1; i < kk; i++)
     {
-        for (j = 1; j < N; j++)
+        for (j = 0; j < N; j++)
         {
-            vb[i][j] = mltn(i + 1, j);
-            printf("g%d,", vb[i][j - 1]);
-            mat[j - 1][i] = vb[i][j - 1];
+            vb[i][j] = mltn(i, j);
+            printf("g%d,", vb[i][j]);
+            mat[j][i] = vb[i][j];
         }
         printf("\n");
     }
@@ -705,7 +704,7 @@ vec sol(MTX a)
     pol = setpol(x.x, K / 2 + 1);
     printpol(o2v(pol));
     printf(" ==key\n");
-    for (i = 1; i < N; i++)
+    for (i = 0; i < N; i++)
     {
         // v.x[i] = 0;
         if (trace(pol, i) % N == 0)
@@ -739,7 +738,8 @@ aa:
     l = -1;
     ii = 0;
     // irreducible gvecpa code (既役多項式が必要なら、ここのコメントを外すこと。)
-
+    
+    
     w = mkpol();
     printsage(o2v(w));
     //    printf("wwwwwww\n");
@@ -801,7 +801,7 @@ aa:
             mat[i][j] = (vb[j][i] * tr[i]) % N;
         }
     }
-
+/*
     for (int i = 0; i < K; i++)
     {
         for (int j = 0; j < M; j++)
@@ -814,7 +814,7 @@ aa:
         }
         printf("\n");
     }
-
+*/
     /*
         for (int i = 0; i < N; i++)
         {
@@ -848,7 +848,7 @@ void vv(int kk)
     unsigned short ta[N] = {0};
 
     printf("van der\n");
-
+/*
     for (i = 0; i < kk; i++)
     {
         for (j = 0; j < N; j++)
@@ -857,7 +857,8 @@ void vv(int kk)
         }
         // printf("\n");
     }
-
+*/
+van(K);
     int l = -1;
     vec pp = {0}, tt = {0};
 
@@ -1023,10 +1024,10 @@ ymo bm_itr(unsigned short s[])
     int i, j, k;
     ymo t = {0};
 
-    U2[0][0][0].x[0] = 1;       // f[0];
-    U2[0][0][1].x[0] = 0;       // fai[0];
-    U2[0][1][0].x[0] = 0;       // g[0];
-    U2[0][1][1].x[0] = N - (1); // thi[0];
+    U2[0][0][0].x[0] = 1;    // f[0];
+    U2[0][0][1].x[0] = 0;    // fai[0];
+    U2[0][1][0].x[0] = 0;    // g[0];
+    U2[0][1][1].x[0] = (1); // thi[0];
     int m = 0, d = 0, p = 2 * d - m - 1, myu = 0;
     printf("m=%d d=%d myu=%d p=%d\n", m, d, myu, p);
     for (m = 0; m < K; m++)
@@ -1042,7 +1043,7 @@ ymo bm_itr(unsigned short s[])
         if (myu == 0 || p >= 0)
         {
             U1[0][0].x[0] = 1;
-            U1[0][1].x[p] = N - (myu);
+            U1[0][1].x[p] = N-(myu);
             U1[1][0].x[0] = 0;
             U1[1][1].x[0] = 1;
             // exit(1);
@@ -1054,7 +1055,7 @@ ymo bm_itr(unsigned short s[])
                 p = -1 * (p);
             }
             U1[0][0].x[p] = 1;
-            U1[0][1].x[0] = N - (myu);
+            U1[0][1].x[0] = N-(myu);
             U1[1][0].x[0] = oinv(myu, N);
             U1[1][1].x[0] = 0;
         }
@@ -1098,65 +1099,60 @@ int main()
     // exit(1);
     srand(clock());
     // mkg(K); // Goppa Code (EEA type)
-    // van(K); // RS-Code generate
-    mkd(f, K);
-    // vv(K);           // Goppa Code's Parity Check (Berlekamp type)
-    while (1)
+    //van(K); // RS-Code generate
+    //mkd(f,K);
+    vv(K);    // Goppa Code's Parity Check (Berlekamp type)
+    while(1){
+    for(i=0;i<T;i++)
+    z1[i+1]=1;
+    //mkerr(z1, T);    // generate error vector
+    f = synd(z1, K); // calc syndrome
+    x = o2v(f);      // transorm to vec
+    ymo y=bm_itr(x.x);    // Berlekamp-Massey Algorithm
+    chen(y.f);
+    for(i=0;i<N;i++)
+    if(z1[i]>0)
+    printf("i=%d\n",i);
+    //exit(1);
+    MTX b = {0};
+
+    for (i = 0; i < K; i++)
+        v.x[K - 1 - i] = x.x[i];
+
+    for (i = 0; i < K / 2; i++)
     {
-        for (i = 0; i < T; i++)
-            z1[i + 1] = 1;
-        // mkerr(z1, T);    // generate error vector
-        f = synd(z1, K); // calc syndrome
-        x = o2v(f);      // transorm to vec
-        // r = bma(x.x);    // Berlekamp-Massey Algorithm
-        ymo y = bm_itr(x.x);
-        chen(y.f);
-        for (i = 0; i < N; i++)
-            if (z1[i] > 0)
-                printf("i=%d\n", i);
-        // exit(1);
-        MTX b = {0};
-
-        for (i = 0; i < K; i++)
-            v.x[K - 1 - i] = x.x[i];
-
-        for (i = 0; i < K / 2; i++)
+        for (int j = 0; j < K / 2 + 1; j++)
         {
-            for (int j = 0; j < K / 2 + 1; j++)
-            {
-                b.x[i][j] = v.x[i + j];
-                // printf("%d,",b.x[i][i+j]);
-            }
-            // printf("\n");
+            b.x[i][j] = v.x[i + j];
+            // printf("%d,",b.x[i][i+j]);
         }
-        printf("\n");
-        for (i = 0; i < K / 2; i++)
-        {
-            for (int j = 0; j < K / 2 + 1; j++)
-                printf("e%d,", b.x[i][j]);
-            printf("\n");
-        }
-        x = sol(b);
-        for (i = 0; i < N; i++)
-        {
-            if (z1[i] != x.x[i])
-            {
-                printf("baka=%d\n", i);
-                exit(1);
-            }
-        }
-        int flg = 0;
-        for (i = 0; i < N; i++)
-        {
-            if (z1[i] > 0 && x.x[i] > 0)
-            {
-                printf("%d %d\n", z1[i], i);
-                flg++;
-            }
-        }
-        if (flg == T)
-            exit(1);
         // printf("\n");
+    }
+    printf("\n");
+    for (i = 0; i < K / 2; i++)
+    {
+        for (int j = 0; j < K / 2 + 1; j++)
+            printf("e%d,", b.x[i][j]);
+        printf("\n");
+    }
+    x = sol(b);
+    for (i = 0; i < N; i++)
+    {
+        if (z1[i] != x.x[i]){
+            printf("baka=%d\n", i);
+            exit(1);
+        }
+    }
+    int flg=0;
+    for(i=0;i<N;i++){
+    if(z1[i]>0 && x.x[i]>0){
+    printf("%d %d %d\n",z1[i],i,x.x[i]);
+    flg++;
+    }
+    }
+    if(flg==T)
+        exit(1);
+    // printf("\n");
     }
     return 0;
 }
