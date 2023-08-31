@@ -3657,8 +3657,9 @@ inv_S.b=0;
     uni in[K] = {0};
     int a = 0;
     short ss[M] = {0};
-
-     mkerr(zz,T);
+    for(i=0;i<T;i++)
+    zz[i]=1;
+    // mkerr(zz,T);
     z = sind(zz, K * E);
     ymo o = bm_itr(z.x);
     v = chen(o.f);

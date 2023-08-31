@@ -3401,7 +3401,7 @@ void pk_gen()
     for(i=0;i<N;i++)
     if(zz[i]>0)
     printf("i=%d %d\n",i,zz[i]);
-    exit(1);
+    //exit(1);
     
     //  w = mkd(w, K);
     //   w = mkg(K);
