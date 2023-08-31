@@ -725,15 +725,7 @@ void vv(int kk)
     unsigned short ta[N] = {0};
 
     printf("van der\n");
-
-    for (i = 0; i < kk; i++)
-    {
-        for (j = 0; j < N; j++)
-        {
-            vb[i][j] = mltn(i, j);
-        }
-        // printf("\n");
-    }
+    van(K);
 
     int l = -1;
     vec pp = {0}, tt = {0};
@@ -867,8 +859,8 @@ int main()
     // exit(1);
     srand(clock());
     // mkg(K); // Goppa Code (EEA type)
-    van(K); // RS-Code generate
-    // vv(K);           // Goppa Code's Parity Check (Berlekamp type)
+    //van(K); // RS-Code generate
+     vv(K);           // Goppa Code's Parity Check (Berlekamp type)
     for(i=0;i<T;i++)
     z1[i]=1;
     //mkerr(z1, T);    // generate error vector
@@ -897,6 +889,7 @@ int main()
         printf("\n");
     }
     x = sol(b);
+
     for (i = 0; i < N; i++)
     {
         if (z1[i] != x.x[i]){
@@ -908,3 +901,4 @@ int main()
 
     return 0;
 }
+
