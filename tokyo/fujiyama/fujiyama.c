@@ -1104,12 +1104,12 @@ int main()
     vv(K);    // Goppa Code's Parity Check (Berlekamp type)
     while(1){
     for(i=0;i<T;i++)
-    z1[i+1]=1;
+    z1[i]=1;
     //mkerr(z1, T);    // generate error vector
     f = synd(z1, K); // calc syndrome
     x = o2v(f);      // transorm to vec
-    ymo y=bm_itr(x.x);    // Berlekamp-Massey Algorithm
-    chen(y.f);
+    //ymo y=bm_itr(x.x);    // Berlekamp-Massey Algorithm
+    //chen(y.f);
     for(i=0;i<N;i++)
     if(z1[i]>0)
     printf("i=%d\n",i);
