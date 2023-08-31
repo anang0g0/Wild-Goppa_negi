@@ -89,40 +89,6 @@ short oinv(short a)
     return N - fg[a] + 1;
 }
 
-short oinv2(short a, short n)
-{
-    short i;
-
-    if (a == 0)
-        return 0;
-    if (a == 1)
-        return 1;
-    for (int i = 2; i < N; i++)
-    {
-        if (gf[mlt(i, fg[a])] == 1)
-            return i;
-    }
-    printf("no return\n");
-    exit(1);
-}
-
-// 有限体の元の逆数
-short oinv3(short a)
-{
-
-    if (a == 0)
-        return 0;
-
-    for (int i = 0; i < N; i++)
-    {
-        if (gf[mlt(fg[a], i)] == 1)
-            return (short)i;
-    }
-
-    printf("no return3 \n");
-    //  exit (1);
-}
-
 // aに何をかけたらbになるか
 short equ(short a, short b)
 {
@@ -144,16 +110,6 @@ void wait(void)
     scanf("%d", &a);                           // fgets(line, LINESIZE, stdin); という手も
 }
 
-int deg2(vec v)
-{
-    int n, i;
-
-    for (int i = 0; i < DEG; i++)
-        if (v.x[i] > 0)
-            n = i;
-
-    return i;
-}
 
 // 多項式の次数(default)
 int deg(vec a)
@@ -3537,7 +3493,7 @@ void pk_gen()
     // zz[2] = 1;
     //exit(1);
     for(i=0;i<T;i++)
-    zz[i+1]=1;
+    zz[i]=1;
     //mkerr(zz, T);
     vec x = synd(zz, K);
     ymo m = bm_itr(x.x);
@@ -3667,22 +3623,15 @@ inv_S.b=0;
     for (int i = 0; i < T; i++)
         ss[v.x[i]] = 1;
     for (int i = 0; i < M; i++)
-        if (ss[i] > 0)
+        if (ss[P[i]] > 0)
             printf("%d,", i);
-    printf("\n");
-    for (int i = 0; i < M; i++)
-        rr[i] = ss[P[i]];
-    for (int i = 0; i < M; i++){
-        if (rr[i] > 0)
-            printf("%d,", i);
-    }
     printf("\n");
     for (int i = 0; i < M; i++){
         if (zz[i] > 0)
             printf("%d,", i);
     }
     printf("\n");
-    exit(1);
+    //exit(1);
 
     return;
 }
@@ -5770,52 +5719,21 @@ void stamena()
 // 言わずもがな
 int main(void)
 {
-    int i, a, b, c;
-    short zz[M] = {0};
-    vec r = {0}, g = {0};
-    vec v = {0}, x = {0}, f = {0};
-    static CTX R = {0}, OO = {0}; //, S = {0}, inv_S = {0};
-    short s[K + 1] = {0, 3, 0, 6, 0};
-    static data d = {17, 23, 31}; //, dd[K * 3][N] = {0};
-    //static TX d={5,7};
-    uni e = {d};
-
-    e.fugo.flag = __builtin_parity(e.u);
-
     if (K > N)
         printf("configuration error! K is bigger than N\n");
-    d.b2 = (d.b0 + d.b1);
-    printf("%d %d %d %d %u %d\n", d.b0, d.b1, d.b2, (17 + 23) % 23, e.u, e.fugo.flag);
 
     printf("%d %d %d %d\n", sizeof(uni), sizeof(MTX), sizeof(CTX), sizeof(data));
-    // exit(1);
-    // （謎）
     memset(mat, 0, sizeof(mat));
-     srand(clock());
-    /*
-    R=lu();
-    OO=genS(R);
-    OO=kenzan(R,OO,1);
-    for(int i=0;i<F;i++){
-    for(int j=0;j<F;j++)
-    printf("%d ",OO.x[i][j]);
-    printf("\n");
-    }
-    printf("\n");
-    exit(1);
-    */
+    srand(clock());
     mkmf();
     makefg();
     de();
-    printf("%d %d %d\n", minus(1), minus(2), minus(3));
-    //exit(1);
-
-    short z1[M] = {0};
-    z1[1] = 1;
-    z1[2] = 1;
     pk_gen();
-    exit(1);
 
+    return 0;
+}
+
+/*
     // big = fls;
     int count = 0;
     uni on[4] = {0};
@@ -6003,51 +5921,11 @@ int main(void)
         printf(" ===hi\n");
         // exit(1);
 
-        // exit(1);
-        /*
-        printpol(bibun_old(oo.f));
-        printf("   bibun\n");
-        printpol(bib(oo.f));
-        printf("  bib\n");
-
-        exit(1);
-        printf("   %d\n", eval(bib(oo.f), gf[v.x[0]]));
-        printf("   %d\n", gf[mlt(fg[eval(bib(oo.f), v.x[0])],fg[eval(oo.g, v.x[0])])]);
-        //exit(1);
-        //forney(v);
-        x=bibun_old(oo.f);
-        printf("ixi=%d\n",gf[oinv(gf[mlt(fg[eval(x,v.x[0])],fg[eval(oo.g,v.x[0])])])]);
-        exit(1);
-        */
-        /*
-            uni vv[K]={0};
-            for (int i = 0; i < K*3; i += 3)
-            {
-                vv[i].fugo.b0 = v.x[i + 0];
-                vv[i].fugo.b1 = v.x[i + 1];
-                vv[i].fugo.b2 = v.x[i + 2];
-                r.x[i] = vv[i].u;
-                printf("r%d", r.x[i]);
-            }
-            printf("\n");
-        */
-        // r=sin(zz,OO);
-        //  exit(1);
-        // r=dec(r.x);
-        // printpol(v);
-        // exit(1);
-
+  
         memset(zz, 0, sizeof(zz));
         mkerr(zz, T);
         // for(i=1;i<T+1;i++)
         // zz[i]=i;
-        /*
-        zz[1] = 1;
-        zz[2] = 1;
-        zz[3] = 1;
-        zz[4]=1;
-        zz[5]=1;
-        */
         vec c = {0};
         c.x[T * 2] = 1;
         r = synd(zz, K);
@@ -6080,22 +5958,7 @@ int main(void)
             printf("u=%d %d %d\n", u, gf[(logx(u) + 3) % (O - 1) + 1], r.x[i]);
         }
         exit(1);
-        /*
-        r=vmul(r,t.f);
-        r=deli(r,c);
-        printsage(r);
-        printf("  --r\n");
-        //exit(1);
-        printpol(t.g);
-        printf(" t.g\n");
-        printf("%d ans1\n",gf[mlt(fg[eval(r,8)],oinv(7))]);
-        printpol(t.h);
-        printf(" t.h\n");
-        printf("%d ans2\n",gf[mlt(fg[xtrace(r,5)],oinv(2))]);
-        //forney(t);
-        exit(1);
-        */
-
+  
         x = chen((t.f));
         // exit(1);
         vec ans = {0};
@@ -6138,7 +6001,4 @@ int main(void)
             break;
         }
     }
-
-    return 0;
-}
-
+*/
