@@ -6,7 +6,7 @@
 #include <stdint.h>
 //#include "8192.h"
 
-//#include "global.h"
+#include "global.h"
 //#include "struct.h"
 // #include "1331.h"
 

@@ -636,16 +636,22 @@ vec chen(vec f)
                 z ^= gf[mlt(mltn(i, fg[x]), fg[f.x[i]])];
         }
         if (z == 0)
-        {
-            e.x[fg[x]] = x;
+        {   if(x==0){
+            e.x[count]=1;
             count++;
-            //printf("change %d\n", (fg[x]));
+            printf("change %d\n", (fg[x]));
+            }else{
+            e.x[count] = x;
+            count++;
+            printf("change %d\n", (fg[x]));
+            }
         }
     }
     if(count<T){
         printf("few baka\n");
         exit(1);
     }
+    
     return e;
 }
 
@@ -889,22 +895,20 @@ int main()
     // van(K);          // RS-Code generate
     vv(K);
     while(1){
-    for(i=1;i<T+1;i++)
+    for(i=0;i<T;i++)
     z1[i]=1;
     //mkerr(z1, T);    // generate error vector
-    //z1[4] = 1;
-    //z1[2] = 1;
 
     f = synd(z1, K); // calc syndrome
     x = o2v(f);      // transorm to vec
     //v = bma(x.x);    // Berlekamp-Massey Algorithm
-    v=bm_itr(x.x);
+    //v=bm_itr(x.x);
     
-    /*
+    
     for (i = 0; i < K; i++)
         s[i + 1] = x.x[i];
     v = bms(s, K + 1);
-    */
+    
     printf("the errors below\n");
     for (i = 0; i < N; i++)
     {
@@ -912,10 +916,10 @@ int main()
             printf("chan_ans=%d\n", i); // print answer
     }
     x=chen(v);
-    for(i=0;i<N;i++){
+    for(i=0;i<T;i++)
     if(x.x[i]>0)
-    printf("%d\n",fg[x.x[i]]);
-    }
+    printf("i=%d\n",i);
+
     exit(1);
 }
     printf("%d\n", deg(v));
