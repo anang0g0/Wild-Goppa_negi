@@ -918,7 +918,7 @@ int main()
     x=chen(v);
     for(i=0;i<T;i++)
     if(x.x[i]>0)
-    printf("i=%d\n",i);
+    printf("e!=%d\n",i);
 
     exit(1);
 }
