@@ -1,5 +1,5 @@
 all:
-	gcc -O3 floo.c
+	gcc -O3 vmo.c
 	
 mcElies: $(RFILES)
 	cc -o $@ $(RFILES)
