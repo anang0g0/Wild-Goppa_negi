@@ -10,15 +10,15 @@
 #include <math.h>
 
 // 行列の次元を設定
-#define N 4
-#define MATRIX_SIZE N
+
+#define MATRIX_SIZE 4
 
 double w[MATRIX_SIZE][MATRIX_SIZE];
 
 // 行列掛け算関数
-void matrix_multiply_direct(double A[MATRIX_SIZE][MATRIX_SIZE], double B[MATRIX_SIZE][MATRIX_SIZE], double e[N][N])
+void matrix_multiply_direct(double A[MATRIX_SIZE][MATRIX_SIZE], double B[MATRIX_SIZE][MATRIX_SIZE], double e[MATRIX_SIZE][MATRIX_SIZE])
 {
-    for (int i = 0; i < N; i++)
+    for (int i = 0; i < MATRIX_SIZE; i++)
     {
         for (int j = 0; j < MATRIX_SIZE; j++)
         {
@@ -54,28 +54,28 @@ void matrix_multiply(double A[MATRIX_SIZE][MATRIX_SIZE], double B[MATRIX_SIZE][M
 
 
 // 行列の逆行列を計算する関数
-void inverseMatrix(double A[N][N], double A_inv[N][N]) {
+void inverseMatrix(double A[MATRIX_SIZE][MATRIX_SIZE], double A_inv[MATRIX_SIZE][MATRIX_SIZE]) {
     int i, j, k;
     double temp;
 
     // 単位行列を初期化
-    for (i = 0; i < N; i++) {
-        for (j = 0; j < N; j++) {
+    for (i = 0; i < MATRIX_SIZE; i++) {
+        for (j = 0; j < MATRIX_SIZE; j++) {
             A_inv[i][j] = (i == j) ? 1.0 : 0.0;
         }
     }
 
     // ガウス・ジョルダン法による逆行列の計算
-    for (k = 0; k < N; k++) {
+    for (k = 0; k < MATRIX_SIZE; k++) {
         temp = A[k][k];
-        for (j = 0; j < N; j++) {
+        for (j = 0; j < MATRIX_SIZE; j++) {
             A[k][j] /= temp;
             A_inv[k][j] /= temp;
         }
-        for (i = 0; i < N; i++) {
+        for (i = 0; i < MATRIX_SIZE; i++) {
             if (i != k) {
                 temp = A[i][k];
-                for (j = 0; j < N; j++) {
+                for (j = 0; j < MATRIX_SIZE; j++) {
                     A[i][j] -= A[k][j] * temp;
                     A_inv[i][j] -= A_inv[k][j] * temp;
                 }
@@ -170,23 +170,23 @@ void matrix_multiply_simd(int A[MATRIX_SIZE][MATRIX_SIZE], int B[MATRIX_SIZE][MA
 #define SHM_KEY 1234
 
 int main() {
-    double A[N][N];
-    double A_inv[N][N];
-    double AA[N][N];
-    double e[N][N]={0};
+    double A[MATRIX_SIZE][MATRIX_SIZE];
+    double A_inv[MATRIX_SIZE][MATRIX_SIZE];
+    double AA[MATRIX_SIZE][MATRIX_SIZE];
+    double e[MATRIX_SIZE][MATRIX_SIZE]={0};
     
-    for(int i=0;i<N;i++){
-    for(int j=0;j<N;j++)
+    for(int i=0;i<MATRIX_SIZE;i++){
+    for(int j=0;j<MATRIX_SIZE;j++)
     A[i][j]=1.0+rand()%1129; //1.0+i*N+j;
     }
     A[2][2]=10.0;
-    for(int i=0;i<N;i++){
-    for(int j=0;j<N;j++)
+    for(int i=0;i<MATRIX_SIZE;i++){
+    for(int j=0;j<MATRIX_SIZE;j++)
     AA[i][j]=A[i][j];
     }
 
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
+    for (int i = 0; i < MATRIX_SIZE; i++) {
+        for (int j = 0; j < MATRIX_SIZE; j++) {
             printf("%lf,", A[i][j]);
         }
         printf("\n");
@@ -196,8 +196,8 @@ int main() {
     //matrix_inverse_simd(A,A_inv);
 
     printf("Inverse Matrix:\n");
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
+    for (int i = 0; i < MATRIX_SIZE; i++) {
+        for (int j = 0; j < MATRIX_SIZE; j++) {
             printf("%f\t", A_inv[i][j]);
         }
         printf("\n");
@@ -282,4 +282,3 @@ int main() {
 
     return 0;
 }
-
