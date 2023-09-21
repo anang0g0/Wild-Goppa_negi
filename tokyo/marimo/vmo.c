@@ -28,6 +28,8 @@
 #include <sys/mman.h>
 #include <assert.h>
 #include <execinfo.h>
+#include <immintrin.h> // SSE4.1を使用するためのヘッダファイル
+#include <x86intrin.h> // SIMD命令を使用するためのヘッダファイル
 
 #include "global-p.h"
 #include "struct-p.h"
@@ -102,7 +104,7 @@ short equ(short a, short b)
 }
 
 // 停止コマンド
-void wait(void)
+void waita(void)
 {
     int a;                                     // 読み込む変数はローカルに取るべし
     printf(" (enter number and hit return) "); // 何か表示させたほうが良いだろう
