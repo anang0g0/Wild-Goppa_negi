@@ -10,14 +10,14 @@
 #include <math.h>
 
 // 行列の次元を設定
-#define N 3
-#define MATRIX_SIZE 3
+#define N 4
+#define MATRIX_SIZE 4
 
 
 // 行列掛け算関数
 void matrix_multiply_direct(double A[MATRIX_SIZE][MATRIX_SIZE], double B[MATRIX_SIZE][MATRIX_SIZE], double e[N][N])
 {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < N; i++)
     {
         for (int j = 0; j < MATRIX_SIZE; j++)
         {
@@ -80,14 +80,22 @@ void inverseMatrix(double A[N][N], double A_inv[N][N]) {
 }
 
 int main() {
-    double A[N][N] = {{1.0, 2.0, 3.0},
+    double A[N][N];
+    /*
+     = {{1.0, 2.0, 3.0},
                       {4.0, 5.0, 6.0},
                       {7.0, 8.0, 10.0}};
+    */
     double C[N][N];
     double A_inv[N][N];
     double AA[N][N];
     double e[N][N]={0};
-
+    
+    for(int i=0;i<N;i++){
+    for(int j=0;j<N;j++)
+    A[i][j]=1.0+rand()%1129; //1.0+i*N+j;
+    }
+    A[2][2]=10.0;
     for(int i=0;i<N;i++){
     for(int j=0;j<N;j++)
     AA[i][j]=A[i][j];
