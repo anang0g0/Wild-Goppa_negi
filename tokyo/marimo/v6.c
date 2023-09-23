@@ -11,7 +11,7 @@
 #include "global-p.h"
 #include "struct-p.h"
 
-#define MATRIX_SIZE 8
+#define MATRIX_SIZE 1024
 #define SHM_KEY 1234
 
 
@@ -120,7 +120,38 @@ void matrix_inverse_simd(double A[MATRIX_SIZE][MATRIX_SIZE], double result[MATRI
 
 
 // 行列の逆行列を計算する関数
-void inverseMatrix(double A[MATRIX_SIZE][MATRIX_SIZE], double A_inv[MATRIX_SIZE][MATRIX_SIZE]) {
+void inverseMatrix(double A[MATRIX_SIZE][MATRIX_SIZE], double A_inv[MATRIX_SIZE][MATRIX_SIZE],int start_row,int end_row) {
+    int i, j, k;
+    double temp;
+
+    // 単位行列を初期化
+    for (i = start_row; i < end_row; i++) {
+        for (j = 0; j < MATRIX_SIZE; j++) {
+            A_inv[i][j] = (i == j) ? 1.0 : 0.0;
+        }
+    }
+
+    // ガウス・ジョルダン法による逆行列の計算
+    for (k = start_row; k < end_row; k++) {
+        temp = A[k][k];
+        for (j = 0; j < MATRIX_SIZE; j++) {
+            A[k][j] /= temp;
+            A_inv[k][j] /= temp;
+        }
+        for (i = start_row; i < end_row; i++) {
+            if (i != k) {
+                temp = A[i][k];
+                for (j = 0; j < MATRIX_SIZE; j++) {
+                    A[i][j] -= A[k][j] * temp;
+                    A_inv[i][j] -= A_inv[k][j] * temp;
+                }
+            }
+        }
+    }
+}
+
+// 行列の逆行列を計算する関数
+void inverseMatrix2(double A[MATRIX_SIZE][MATRIX_SIZE], double A_inv[MATRIX_SIZE][MATRIX_SIZE]) {
     int i, j, k;
     double temp;
 
@@ -170,7 +201,8 @@ int main() {
         //printf("\n");
     }
     
-    inverseMatrix(A,A_inv);
+    
+    //inverseMatrix2(A,A_inv);
     //matrix_inverse_simd(A,A_inv);
 
     // マルチプロセスで行列掛け算を並列化
@@ -197,7 +229,7 @@ int main() {
             int start_row = i * rows_per_process;
             int end_row = (i + 1) * rows_per_process;
 
-
+            inverseMatrix(A,A_inv,start_row,end_row);
             matmul_simd(AA,A_inv,shared_C,start_row,end_row);
             //matrix_multiply(AA, A_inv, shared_C, start_row, end_row);
 
