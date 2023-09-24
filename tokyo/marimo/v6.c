@@ -232,7 +232,7 @@ int main()
     // matrix_inverse_simd(A,A_inv);
 
     // マルチプロセスで行列掛け算を並列化
-    int num_processes = 8;
+    int num_processes = 16;
     int rows_per_process = MATRIX_SIZE / num_processes;
 
     int shmid = shmget(SHM_KEY, sizeof(double) * MATRIX_SIZE * MATRIX_SIZE, IPC_CREAT | 0666);
@@ -259,9 +259,15 @@ int main()
             int start_row = i * rows_per_process;
             int end_row = (i + 1) * rows_per_process;
 
+<<<<<<< HEAD
             inverseMatrix(A, A_inv, start_row, end_row);
             matmul_simd(AA, A_inv, shared_C, start_row, end_row);
             // matrix_multiply(AA, A_inv, shared_C, start_row, end_row);
+=======
+            inverseMatrix(A,A_inv,start_row,end_row);
+            //matmul_simd(AA,A_inv,shared_C,start_row,end_row);
+            matrix_multiply(AA, A_inv, shared_C, start_row, end_row);
+>>>>>>> 0d31fbc4a6212bad92185b8240b4fb687a5f9120
 
             // 結果を表示
             printf("Process %d: Rows %d to %d completed\n", i, start_row, end_row);
