@@ -15,8 +15,6 @@
 #define SHM_KEY 1234
 
 
-#define NUM_THREADS 4   // 使用するスレッドの数
-
 // 行列を表示する関数
 void print_matrix(double A[MATRIX_SIZE][MATRIX_SIZE]) {
     for (int i = 0; i < MATRIX_SIZE; i++) {
