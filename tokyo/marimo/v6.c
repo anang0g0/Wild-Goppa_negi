@@ -8,7 +8,7 @@
 #include <math.h>
 #include <x86intrin.h> // SIMD命令を使用するためのヘッダファイル
 
-#define MATRIX_SIZE 2048
+#define MATRIX_SIZE 8
 #define SHM_KEY 1234
 
 
@@ -17,6 +17,21 @@ void print_matrix(double A[MATRIX_SIZE][MATRIX_SIZE]) {
     for (int i = 0; i < MATRIX_SIZE; i++) {
         for (int j = 0; j < MATRIX_SIZE; j++) {
             printf("%lf ", A[i][j]);
+        }
+        printf("\n");
+    }
+}
+// 行列を表示する関数
+void print_matrix2(double *A) {
+    for (int i = 0; i < MATRIX_SIZE; i++) {
+        for (int j = 0; j < MATRIX_SIZE; j++) {
+            if(A[i*MATRIX_SIZE+j]==1.0){
+            printf("%d ", 1);//(A[i* MATRIX_SIZE+j]));
+            }else if(A[i*MATRIX_SIZE+j]== -0.0){
+            printf("0 ");
+            }else{
+                printf("%lf ",A[i*MATRIX_SIZE+j]);
+            }
         }
         printf("\n");
     }
@@ -106,12 +121,53 @@ void matrix_inverse_simd(double A[MATRIX_SIZE][MATRIX_SIZE], double result[MATRI
                 __m128d scaled = _mm_mul_pd(scale, row_pivot);
                 __m128d row_target = _mm_loadu_pd(result[row] + j);
                 row_target = _mm_sub_pd(row_target, scaled);
-                _mm_storeu_pd(result[row] + j, row_target);
+                _mm_storeu_pd(result[row*MATRIX_SIZE+j] , row_target);
             }
         }
     }
 }
 
+
+// 行列の逆行列を計算する関数
+void matrix_inverse_simd2(double A[MATRIX_SIZE][MATRIX_SIZE], double result[MATRIX_SIZE][MATRIX_SIZE]) {
+    // 単位行列を初期化
+    for (int i = 0; i < MATRIX_SIZE; i++) {
+        for (int j = 0; j < MATRIX_SIZE; j++) {
+            result[i][j] = (i == j) ? 1.0 : 0.0;
+        }
+    }
+
+    // 逆行列の計算
+    for (int k = 0; k < MATRIX_SIZE; k++) {
+        // ピボット要素を取得
+        double pivot_value = A[k][k];
+
+        // ピボット要素で行をスケーリング（SIMDを使用）
+        __m128d pivot_vector = _mm_set1_pd(pivot_value);
+        for (int j = 0; j < MATRIX_SIZE; j += 2) {
+            __m128d result_vector = _mm_loadu_pd(result[k] + j);
+            result_vector = _mm_div_pd(result_vector, pivot_vector);
+            _mm_storeu_pd(result[k] + j, result_vector);
+        }
+
+        for (int i = 0; i < MATRIX_SIZE; i++) {
+            if (i != k) {
+                // スケーリングファクターを取得
+                double factor = A[i][k];
+
+                // スケーリングファクターで行を更新（SIMDを使用）
+                __m128d factor_vector = _mm_set1_pd(factor);
+                for (int j = 0; j < MATRIX_SIZE; j += 2) {
+                    __m128d pivot_row_vector = _mm_loadu_pd(result[k] + j);
+                    __m128d row_vector = _mm_loadu_pd(result[i] + j);
+                    __m128d scaled_vector = _mm_mul_pd(factor_vector, pivot_row_vector);
+                    row_vector = _mm_sub_pd(row_vector, scaled_vector);
+                    _mm_storeu_pd(result[i*MATRIX_SIZE+j] , row_vector);
+                }
+            }
+        }
+    }
+}
 
 
 // 行列の逆行列を計算する関数
@@ -145,35 +201,103 @@ void inverseMatrix(double A[MATRIX_SIZE][MATRIX_SIZE], double A_inv[MATRIX_SIZE]
     }
 }
 
-// 行列の逆行列を計算する関数
-void inverseMatrix2(double A[MATRIX_SIZE][MATRIX_SIZE], double A_inv[MATRIX_SIZE][MATRIX_SIZE]) {
-    int i, j, k;
-    double temp;
 
+// 行列の逆行列を計算する関数
+void inverseMatrix_simd2(double A[MATRIX_SIZE][MATRIX_SIZE], double A_inv[MATRIX_SIZE][MATRIX_SIZE], int start_row, int end_row) {
     // 単位行列を初期化
-    for (i = 0; i < MATRIX_SIZE; i++) {
-        for (j = 0; j < MATRIX_SIZE; j++) {
+    for (int i = start_row; i < end_row; i++) {
+        for (int j = 0; j < MATRIX_SIZE; j++) {
             A_inv[i][j] = (i == j) ? 1.0 : 0.0;
         }
     }
 
     // ガウス・ジョルダン法による逆行列の計算
-    for (k = 0; k < MATRIX_SIZE; k++) {
-        temp = A[k][k];
-        for (j = 0; j < MATRIX_SIZE; j++) {
-            A[k][j] /= temp;
-            A_inv[k][j] /= temp;
-        }
-        for (i = 0; i < MATRIX_SIZE; i++) {
+    for (int k = start_row; k < end_row; k++) {
+        double temp = A[k][k];
+
+        // SIMDレジスタに要素をロード
+        __m128d pivot_row = _mm_loadu_pd(A[k] + k);
+        __m128d pivot_row_inv = _mm_loadu_pd(A_inv[k] + k);
+
+        // 要素をスケーリング
+        __m128d scale = _mm_div_pd(_mm_set1_pd(1.0), pivot_row);
+        pivot_row = _mm_mul_pd(pivot_row, scale);
+        pivot_row_inv = _mm_mul_pd(pivot_row_inv, scale);
+
+        // 行列の各行にSIMD演算を適用
+        for (int i = start_row; i < end_row; i++) {
             if (i != k) {
-                temp = A[i][k];
-                for (j = 0; j < MATRIX_SIZE; j++) {
-                    A[i][j] -= A[k][j] * temp;
-                    A_inv[i][j] -= A_inv[k][j] * temp;
-                }
+                double factor = A[i][k];
+
+                // SIMDレジスタに要素をロード
+                __m128d current_row = _mm_loadu_pd(A[i] + k);
+                __m128d current_row_inv = _mm_loadu_pd(A_inv[i] + k);
+
+                // スケーリングと要素の更新
+                scale = _mm_set1_pd(factor);
+                pivot_row = _mm_mul_pd(scale, pivot_row);
+                pivot_row_inv = _mm_mul_pd(scale, pivot_row_inv);
+
+                current_row = _mm_sub_pd(current_row, pivot_row);
+                current_row_inv = _mm_sub_pd(current_row_inv, pivot_row_inv);
+
+                // 結果を格納
+                _mm_storeu_pd(A[i*MATRIX_SIZE]+k , current_row);
+                _mm_storeu_pd(A_inv[i*MATRIX_SIZE]+k , current_row_inv);
             }
         }
     }
+}
+
+// 行列の逆行列を計算する関数
+void inverseMatrix_simd(double A[MATRIX_SIZE][MATRIX_SIZE], double A_inv[MATRIX_SIZE][MATRIX_SIZE], int start_row, int end_row) {
+    // 単位行列を初期化
+    for (int i = start_row; i < end_row; i++) {
+        for (int j = 0; j < MATRIX_SIZE; j++) {
+            A_inv[i][j] = (i == j) ? 1.0 : 0.0;
+        }
+    }
+
+    // ガウス・ジョルダン法による逆行列の計算
+    for (int k = start_row; k < end_row; k++) {
+        double temp = A[k][k];
+
+        // SIMDレジスタに要素をロード
+        __m128d pivot_row = _mm_loadu_pd(A[k] + k);
+        __m128d pivot_row_inv = _mm_loadu_pd(A_inv[k] + k);
+
+        // 要素をスケーリング
+        __m128d scale = _mm_div_pd(_mm_set1_pd(1.0), pivot_row);
+        pivot_row = _mm_mul_pd(pivot_row, scale);
+        pivot_row_inv = _mm_mul_pd(pivot_row_inv, scale);
+
+        // 行列の各行にSIMD演算を適用
+        for (int i = start_row; i < end_row; i++) {
+            if (i != k) {
+                double factor = A[i][k];
+
+                // SIMDレジスタに要素をロード
+                __m128d current_row = _mm_loadu_pd(A[i] + k);
+                __m128d current_row_inv = _mm_loadu_pd(A_inv[i] + k);
+
+                // スケーリングと要素の更新
+                scale = _mm_set1_pd(factor);
+                pivot_row = _mm_mul_pd(scale, pivot_row);
+                pivot_row_inv = _mm_mul_pd(scale, pivot_row_inv);
+
+                current_row = _mm_sub_pd(current_row, pivot_row);
+                current_row_inv = _mm_sub_pd(current_row_inv, pivot_row_inv);
+
+                // 結果を格納
+                _mm_storeu_pd(A[i*MATRIX_SIZE] + k, current_row);
+                _mm_storeu_pd(A_inv[i*MATRIX_SIZE+k] , current_row_inv);
+            }
+        }
+    }
+    print_matrix(A_inv);
+    printf("\n");
+    print_matrix(A);
+    exit(1);
 }
 
 
@@ -195,10 +319,7 @@ int main() {
         }
         //printf("\n");
     }
-    
-    
-    //inverseMatrix2(A,A_inv);
-    //matrix_inverse_simd(A,A_inv);
+        
 
     // マルチプロセスで行列掛け算を並列化
     int num_processes = 4;
@@ -216,6 +337,23 @@ int main() {
         exit(1);
     }
 
+    print_matrix(AA);
+    printf("\n");
+    inverseMatrix(A,A_inv,0,MATRIX_SIZE);
+    //matrix_inverse_simd2(A,A_inv);
+    //matrix_inverse_simd(A,A_inv);
+    //inverseMatrix_simd(A,A_inv,0,MATRIX_SIZE);
+    //inverseMatrix_simd2(A,A_inv,0,MATRIX_SIZE);
+        print_matrix(A);
+    printf("\n");
+        print_matrix2(A_inv);
+    printf("\n");
+    //exit(1);
+    //matrix_multiply(AA,A_inv,shared_C, 0,MATRIX_SIZE);
+    matmul_simd(AA,A_inv,shared_C,0,MATRIX_SIZE);
+    //inverseMatrix_simd2(A,A_inv,0,MATRIX_SIZE);
+    print_matrix2(shared_C);
+    exit(1);
     // 各プロセスで一部の行を計算
     for (int i = 0; i < num_processes; i++) {
         pid_t pid = fork();
@@ -223,15 +361,9 @@ int main() {
         if (pid == 0) {
             int start_row = i * rows_per_process;
             int end_row = (i + 1) * rows_per_process;
-
-            inverseMatrix(A,A_inv,start_row,end_row);
-<<<<<<< HEAD
-            matmul_simd(AA,A_inv,shared_C,start_row,end_row);
-            //matrix_multiply(AA, A_inv, shared_C, start_row, end_row);
-=======
+            //inverseMatrix(A,A_inv,start_row,end_row);
             //matmul_simd(AA,A_inv,shared_C,start_row,end_row);
             matrix_multiply(AA, A_inv, shared_C, start_row, end_row);
->>>>>>> c95a4284ba189a2586de4481d8f1cdf7a3f5c025
 
             // 結果を表示
             printf("Process %d: Rows %d to %d completed\n", i, start_row, end_row);
