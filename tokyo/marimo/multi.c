@@ -9,7 +9,7 @@
 #include <sys/shm.h>
 #include <x86intrin.h> // SIMD命令を使用するためのヘッダファイル
 
-#define MATRIX_SIZE 16 // 行列のサイズ
+#define MATRIX_SIZE 1024 // 行列のサイズ
 #define SHM_KEY 1234     // 共有メモリのキー
 
 // 行列掛け算関数
